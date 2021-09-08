@@ -10,6 +10,7 @@ class Graph:
     """
     Provides information about graph: number of nodes, number of edges, set of labels on edges.
     It has not any binding to defined graph, it simply holds a info.
+
     Attributes
     ----------
     nodes: int
@@ -36,10 +37,12 @@ class Graph:
 def get_graph_info(graph: nx.MultiDiGraph) -> Graph:
     """
     Provides information about graph by instance of Graph object
+
     Parameters
     ----------
     graph: nx.MultiDiGraph
         Graph from which information is gained
+
     Returns
     -------
     Graph
@@ -57,6 +60,7 @@ def create_two_cycles_graph(
 ) -> nx.MultiDiGraph:
     """
     Generates graph with two cycles
+
     Parameters
     ----------
     first_nodes_count: int
@@ -65,6 +69,7 @@ def create_two_cycles_graph(
         Number of nodes in the second cycle
     labels: Tuple[str, str]
         Labels for the edges on the first and second cycle
+
     Returns
     -------
     nx.MultiDiGraph
@@ -80,12 +85,14 @@ def create_two_cycles_graph(
 def save_graph_to_dot(graph: nx.MultiDiGraph, file_path: str) -> None:
     """
     Save graph to file with .dot extension
+
         Parameters
         ----------
         graph: nx.MultiDiGraph
             Graph which will be saved to file
         file_path: str
             Path to file
+
         Returns
         -------
         None

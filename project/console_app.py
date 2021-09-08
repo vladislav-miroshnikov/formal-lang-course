@@ -9,8 +9,7 @@ __all__ = ["init_console"]
 def exit_app() -> None:
     """
     Exit from the application
-    Parameters
-    ----------
+
     Returns
     -------
     None
@@ -30,6 +29,7 @@ commands_executor = {
 def init_console() -> None:
     """
     Starts a console application and waiting for input
+
     Returns
     -------
     None
@@ -62,13 +62,16 @@ def print_console_info():
 def execute_command(text_split: List[str]) -> None:
     """
     Checks that a list of strings matches an application commands and execute command
+
     Parameters
     ----------
     text_split: List[str]
         List of strings to check
+
     Returns
     -------
     None
+
     Raises
     ------
     Exception

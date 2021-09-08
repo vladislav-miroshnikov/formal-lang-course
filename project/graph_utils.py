@@ -13,14 +13,17 @@ graph_dictionary = {}
 def get_graph_info_util(graph_name) -> Graph:
     """
     Provides and prints information about graph
+
     Parameters
     ----------
     graph_name: str
         Name of the graph
+
     Returns
     -------
     Graph
         Object with information about graph
+
     Raises
     ------
     Exception
@@ -47,6 +50,7 @@ def create_two_cycles_graph_util(
 ) -> nx.MultiDiGraph:
     """
     Create named and labeled two cycles graph.
+
     Parameters
     ----------
     graph_name: str
@@ -59,6 +63,7 @@ def create_two_cycles_graph_util(
         Label for edges in the first cycle
     second_label: str
         Label for edges in the second cycle
+
     Returns
     -------
     nx.MultiDiGraph
@@ -76,14 +81,17 @@ def create_two_cycles_graph_util(
 def save_to_dot(graph_name, file_path) -> None:
     """
     Saves the graph to a .dot file along the given path
+
     Parameters
     ----------
     graph_name: str
         Name of saved graph
     file_path: str
         Path where to save graph
+
     Returns
     -------
+
     Raises
     ------
     Exception
