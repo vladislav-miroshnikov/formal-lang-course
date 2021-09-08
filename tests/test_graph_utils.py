@@ -23,7 +23,7 @@ def test_get_graph_info():
 
 
 def test_creating_and_saving_graph():
-    path = "data/graph.dot"
+    path = "graph.dot"
 
     expected_graph = create_two_cycles_graph(5, 10, ("a", "b"))
     expected_graph_text = str(nx.drawing.nx_pydot.to_pydot(expected_graph))
