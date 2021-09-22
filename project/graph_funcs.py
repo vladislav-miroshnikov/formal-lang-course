@@ -140,9 +140,14 @@ def get_nfa_by_graph(
         nfa.add_transition(node_from, edge_data, node_to)
 
     if (start_nodes and final_nodes) is None:
-        for state in nfa.states:
-            nfa.add_start_state(state)
-            nfa.add_final_state(state)
+        if not nfa.states:
+            for node in graph.nodes:
+                nfa.add_start_state(State(node))
+                nfa.add_final_state(State(node))
+        else:
+            for state in nfa.states:
+                nfa.add_start_state(state)
+                nfa.add_final_state(state)
         return nfa
 
     if start_nodes:

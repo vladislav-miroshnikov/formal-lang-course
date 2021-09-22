@@ -3,7 +3,7 @@ import os
 import cfpq_data
 import networkx as nx
 import pytest
-from pyformlang.finite_automaton import NondeterministicFiniteAutomaton, State
+from pyformlang.finite_automaton import NondeterministicFiniteAutomaton, State, Symbol
 
 from project.graph_utils import (
     create_two_cycles_graph_util,
@@ -69,6 +69,13 @@ def test_wrong_node_in_nfa(two_cycles_graph, start_states, final_states):
         get_nfa_by_graph(two_cycles_graph, start_states, final_states)
 
 
+def test_null_graph_to_nfa():
+    null_graph = nx.null_graph(create_using=nx.MultiDiGraph)
+    nfa = get_nfa_by_graph(null_graph)
+
+    assert nfa.is_empty()
+
+
 @pytest.mark.parametrize(
     "start_states, final_states",
     [
@@ -108,3 +115,29 @@ def test_nfa_accepting_words(two_cycles_graph, accepting_words, not_accepting_wo
     assert all(nfa.accepts(word) for word in accepting_words) and not all(
         nfa.accepts(word) for word in not_accepting_words
     )
+
+
+def test_without_edges_graph_to_nfa():
+    empty_graph = nx.empty_graph(2, create_using=nx.MultiDiGraph)
+    actual_nfa = get_nfa_by_graph(empty_graph)
+
+    expected_nfa = NondeterministicFiniteAutomaton()
+    expected_nfa.add_start_state(State(0))
+    expected_nfa.add_start_state(State(1))
+    expected_nfa.add_final_state(State(0))
+    expected_nfa.add_final_state(State(1))
+
+    assert actual_nfa.is_equivalent_to(expected_nfa)
+
+
+def test_one_node_and_edge_graph_to_nfa():
+    graph = nx.empty_graph(1, create_using=nx.MultiDiGraph)
+    graph.add_edge(0, 0, label="X")
+    actual_nfa = get_nfa_by_graph(graph)
+
+    expected_nfa = NondeterministicFiniteAutomaton()
+    expected_nfa.add_start_state(State(0))
+    expected_nfa.add_final_state(State(0))
+    expected_nfa.add_transition(State(0), Symbol("X"), State(0))
+
+    assert actual_nfa.is_equivalent_to(expected_nfa)
