@@ -22,27 +22,20 @@ def test_creating_min_dfa() -> None:
 
     state_0 = State(0)
     state_1 = State(1)
-    state_2 = State(2)
 
     symbol_0 = Symbol("0")
     symbol_1 = Symbol("1")
-    symbol_2 = Symbol("2")
 
     expected_dfa.add_start_state(state_0)
     expected_dfa.add_final_state(state_0)
     expected_dfa.add_final_state(state_1)
-    expected_dfa.add_final_state(state_2)
 
     expected_dfa.add_transition(state_0, symbol_0, state_0)
     expected_dfa.add_transition(state_0, symbol_1, state_1)
-    expected_dfa.add_transition(state_0, symbol_2, state_2)
 
     expected_dfa.add_transition(state_1, symbol_1, state_1)
-    expected_dfa.add_transition(state_1, symbol_2, state_2)
 
-    expected_dfa.add_transition(state_2, symbol_2, state_2)
-
-    actual_dfa = regex_to_min_dfa("0* 1* 2*")
+    actual_dfa = regex_to_min_dfa("0* 1*")
 
     assert expected_dfa.is_equivalent_to(actual_dfa) and len(actual_dfa.states) == len(
         expected_dfa.states
