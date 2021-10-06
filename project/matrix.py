@@ -3,6 +3,8 @@ from scipy import sparse
 
 __all__ = ["BooleanMatrices"]
 
+from scipy.sparse import dok_matrix
+
 
 class BooleanMatrices:
     """
@@ -88,6 +90,9 @@ class BooleanMatrices:
         tc: dok_matrix
             Transitive closure of boolean matrices
         """
+        if not self.bool_matrices.values():
+            return dok_matrix((1, 1))
+
         tc = sum(self.bool_matrices.values())
         prev_nnz = tc.nnz
         curr_nnz = 0
