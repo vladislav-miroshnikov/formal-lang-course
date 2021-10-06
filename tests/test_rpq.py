@@ -19,7 +19,9 @@ def empty_graph():
 @pytest.fixture
 def acyclic_graph():
     graph = nx.MultiDiGraph()
-    graph.add_edges_from([(0, 1, {"label": "X"}), (1, 2, {"label": "Y"}), (2, 3, {"label": "Y"})])
+    graph.add_edges_from(
+        [(0, 1, {"label": "X"}), (1, 2, {"label": "Y"}), (2, 3, {"label": "Y"})]
+    )
     return graph
 
 
@@ -27,10 +29,10 @@ def acyclic_graph():
     "query, start_nodes, final_nodes, expected_rpq",
     [
         (
-                "X*|Y",
-                None,
-                None,
-                set(product(range(4), range(4))).union({(0, 4), (4, 5), (5, 0)}),
+            "X*|Y",
+            None,
+            None,
+            set(product(range(4), range(4))).union({(0, 4), (4, 5), (5, 0)}),
         ),
         ("X*|Y", {0}, {1, 2, 3, 4}, {(0, 1), (0, 2), (0, 3), (0, 4)}),
         ("X*|Y", {4}, {4, 5}, {(4, 5)}),
