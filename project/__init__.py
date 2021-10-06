@@ -9,3 +9,12 @@ from project.graph_funcs import *
 
 import project.regex
 from project.regex import *
+
+import project.matrix
+from project.matrix import *
+
+import project.matrix_utils
+from project.matrix_utils import *
+
+import project.rpq
+from project.rpq import *
