@@ -74,7 +74,7 @@ class BooleanMatrices:
                     index_from = self.state_indices[state_from]
                     index_to = self.state_indices[state_to]
                     if label not in bool_matrices:
-                        bool_matrices[label] = sparse.csr_matrix(
+                        bool_matrices[label] = sparse.dok_matrix(
                             (self.states_count, self.states_count), dtype=bool
                         )
                     bool_matrices[label][index_from, index_to] = True

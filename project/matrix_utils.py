@@ -28,7 +28,7 @@ def intersect_boolean_matrices(self: BooleanMatrices, other: BooleanMatrices):
 
     for symbol in common_symbols:
         intersect_bm.bool_matrices[symbol] = sparse.kron(
-            self.bool_matrices[symbol], other.bool_matrices[symbol], format="csr"
+            self.bool_matrices[symbol], other.bool_matrices[symbol], format="dok"
         )
 
     for state_fst, state_fst_index in self.state_indices.items():
