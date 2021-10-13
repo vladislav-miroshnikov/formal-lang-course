@@ -39,8 +39,8 @@ def get_graph_info_util(graph_name) -> Graph:
 
     graph_info = get_graph_info(graph)
 
-    # print("Information about graph:")
-    # print(graph_info)
+    print("Information about graph:")
+    print(graph_info)
 
     return graph_info
 
