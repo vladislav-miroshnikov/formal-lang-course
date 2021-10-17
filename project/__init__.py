@@ -18,3 +18,6 @@ from project.matrix_utils import *
 
 import project.rpq
 from project.rpq import *
+
+import project.cfg
+from project.cfg import *
