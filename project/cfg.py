@@ -1,13 +1,13 @@
 import os
 
-from pyformlang.cfg import CFG, Variable
+from pyformlang.cfg import CFG, Variable, Production, Epsilon
 
-__all__ = ["process_cnf_from_file", "process_cnf_from_text"]
+__all__ = ["process_wcnf_from_file", "process_wcnf_from_text", "is_weak_normal_form"]
 
 
-def process_cnf_from_file(path: str, start_symbol: str = None) -> CFG:
+def process_wcnf_from_file(path: str, start_symbol: str = None) -> CFG:
     """
-    Process Context Free Grammar in Chomsky Normal Form equivalent to file text representation of CFG.
+    Process Context Free Grammar in Weak Chomsky Normal Form equivalent to file text representation of CFG.
 
     Parameters
     ----------
@@ -25,7 +25,7 @@ def process_cnf_from_file(path: str, start_symbol: str = None) -> CFG:
     Returns
     -------
     CNF:
-        Context Free Grammar in Chomsky Normal Form equivalent to
+        Context Free Grammar in Weak Chomsky Normal Form equivalent to
         file text representation of CFG
 
     Raises
@@ -46,13 +46,12 @@ def process_cnf_from_file(path: str, start_symbol: str = None) -> CFG:
     with open(path, "r") as file:
         cfg_str = file.read()
 
-    return process_cnf_from_text(cfg_str, start_symbol)
+    return process_wcnf_from_text(cfg_str, start_symbol)
 
 
-def process_cnf_from_text(cfg_text: str, start_symbol: str = None) -> CFG:
+def process_wcnf_from_text(cfg_text: str, start_symbol: str = None) -> CFG:
     """
-    Get context Free Grammar in Chomsky Normal Form (more strict case of
-    the Weak Chomsky Normal Form, which can be weakened to it through product changes)
+    Get context Free Grammar in Weak Chomsky Normal Form
     equivalent to file text representation of CFG.
 
     Parameters
@@ -70,8 +69,8 @@ def process_cnf_from_text(cfg_text: str, start_symbol: str = None) -> CFG:
 
     Returns
     -------
-    CNF:
-        Context Free Grammar in Chomsky Normal Form equivalent to
+    WCNF:
+        Context Free Grammar in Weak Chomsky Normal Form equivalent to
         file text representation of CFG
 
     Raises
@@ -86,4 +85,39 @@ def process_cnf_from_text(cfg_text: str, start_symbol: str = None) -> CFG:
     cfg = CFG.from_text(cfg_text, Variable(start_symbol))
     cnf = cfg.to_normal_form()
 
+    productions = set(cfg.productions)
+
+    if cfg.generate_epsilon():
+        productions.add(Production(Variable(start_symbol), [Epsilon()]))
+        wcnf = CFG(
+            variables=cfg.variables,
+            start_symbol=Variable(start_symbol),
+            terminals=cfg.terminals,
+            productions=productions,
+        )
+        return wcnf
+
     return cnf
+
+
+def is_weak_normal_form(wcnf: CFG):
+    """
+    Checks if all products are in normal form, but allows epsilon products, that is Weak Chomsky Normal Form
+
+    Parameters
+    ----------
+    wcnf: CFG
+
+    Returns
+    -------
+    Boolean:
+        If wcnf in Weak Chomsky Normal Form
+    """
+
+    return all(
+        [
+            production.is_normal_form
+            for production in wcnf.productions
+            if not (len(production.body) == 1 and production.body == Epsilon())
+        ]
+    )

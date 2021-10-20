@@ -1,6 +1,6 @@
 import pytest
 
-from project.cfg import process_cnf_from_file
+from project.cfg import process_wcnf_from_file, is_weak_normal_form
 
 
 def test_wrong_file():
@@ -9,25 +9,25 @@ def test_wrong_file():
     path_to_empty = "tests/data/cfg/empty.txt"
 
     with pytest.raises(OSError):
-        process_cnf_from_file(path_not_exists)
+        process_wcnf_from_file(path_not_exists)
     with pytest.raises(OSError):
-        process_cnf_from_file(path_not_txt)
+        process_wcnf_from_file(path_not_txt)
     with pytest.raises(OSError):
-        process_cnf_from_file(path_to_empty)
+        process_wcnf_from_file(path_to_empty)
 
 
 def test_wrong_text():
     with pytest.raises(ValueError):
-        process_cnf_from_file("tests/data/cfg/incorrect_grammar.txt")
+        process_wcnf_from_file("tests/data/cfg/incorrect_grammar.txt")
 
 
 @pytest.mark.parametrize(
     "filename, axiom",
-    [("epsilon.txt", "epsilon"), ("grammar.txt", "S"), ("random.txt", "Hello")],
+    [("epsilon.txt", "E"), ("grammar.txt", "S"), ("random.txt", "Hello")],
 )
 def test_process_cnf_from_file(filename, axiom):
     path = "tests/data/cfg/" + filename
 
-    cnf = process_cnf_from_file(path, axiom)
+    wcnf = process_wcnf_from_file(path, axiom)
 
-    assert cnf.is_normal_form()
+    assert is_weak_normal_form(wcnf)
