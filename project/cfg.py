@@ -83,41 +83,54 @@ def process_wcnf_from_text(cfg_text: str, start_symbol: str = None) -> CFG:
         start_symbol = "S"
 
     cfg = CFG.from_text(cfg_text, Variable(start_symbol))
-    cnf = cfg.to_normal_form()
 
-    productions = set(cfg.productions)
-
-    if cfg.generate_epsilon():
-        productions.add(Production(Variable(start_symbol), [Epsilon()]))
-        wcnf = CFG(
-            variables=cfg.variables,
-            start_symbol=Variable(start_symbol),
-            terminals=cfg.terminals,
-            productions=productions,
-        )
-        return wcnf
-
-    return cnf
-
-
-def is_weak_normal_form(wcnf: CFG):
-    """
-    Checks if all products are in normal form, but allows epsilon products, that is Weak Chomsky Normal Form
-
-    Parameters
-    ----------
-    wcnf: CFG
-
-    Returns
-    -------
-    Boolean:
-        If wcnf in Weak Chomsky Normal Form
-    """
-
-    return all(
-        [
-            production.is_normal_form
-            for production in wcnf.productions
-            if not (len(production.body) == 1 and production.body == Epsilon())
-        ]
+    wcnf = (
+        cfg.remove_useless_symbols()
+        .eliminate_unit_productions()
+        .remove_useless_symbols()
     )
+
+    productions = wcnf._get_productions_with_only_single_terminals()
+    productions = wcnf._decompose_productions(productions)
+
+    return CFG(start_symbol=wcnf.start_symbol, productions=set(productions))
+
+
+def verify_epsilons(variables, old_productions, current_productions):
+    """
+    Check if all epsilons are present in the available variables from the original grammar in the given normal form.
+    """
+    old_productions_with_epsilon = set(
+        filter(
+            lambda prod: prod.head in variables and not prod.body,
+            old_productions,
+        )
+    )
+
+    current_productions_with_epsilon = set(
+        filter(lambda prod: not prod.body, current_productions)
+    )
+    for production in old_productions_with_epsilon:
+        if production not in current_productions_with_epsilon:
+            return False
+    return True
+
+
+def is_weak_normal_form(csg, cfg):
+    """
+    Check if a given cfg_nf is in Chomsky's minimally weakened normal form
+    The rules are as follows:
+    (1) A -> BC, where A, B, C in variables
+    (2) A -> a, where A in variables, a in terminals
+    (3) A -> epsilon, where A in variables
+    It also checks if each reachable epsilon product from the original grammar is present in the WNCF.
+    """
+    for production in cfg.productions:
+        body = production.body
+        if not (
+            (len(body) <= 2 and all(map(lambda x: x in cfg.variables, body)))
+            or (len(body) == 1 and body[0] in cfg.terminals)
+            or (not body)
+        ) or not verify_epsilons(cfg.variables, csg.productions, cfg.productions):
+            return False
+    return True
