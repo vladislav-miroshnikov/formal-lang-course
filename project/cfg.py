@@ -116,7 +116,7 @@ def verify_epsilons(variables, old_productions, current_productions):
     return True
 
 
-def is_weak_normal_form(csg, cfg):
+def is_weak_normal_form(cfg, cnf):
     """
     Check if a given cfg_nf is in Chomsky's minimally weakened normal form
     The rules are as follows:
@@ -124,13 +124,25 @@ def is_weak_normal_form(csg, cfg):
     (2) A -> a, where A in variables, a in terminals
     (3) A -> epsilon, where A in variables
     It also checks if each reachable epsilon product from the original grammar is present in the WNCF.
+
+    Parameters
+    ----------
+    cfg: CFG
+        Original Context-Free Grammar
+    cnf: CFG
+        Grammar in the supposed Weak Chomsky Normal Form
+
+    Returns
+    -------
+    Boolean:
+        If cnf in Weak Chomsky Normal Form
     """
-    for production in cfg.productions:
+    for production in cnf.productions:
         body = production.body
         if not (
-            (len(body) <= 2 and all(map(lambda x: x in cfg.variables, body)))
-            or (len(body) == 1 and body[0] in cfg.terminals)
+            (len(body) <= 2 and all(map(lambda x: x in cnf.variables, body)))
+            or (len(body) == 1 and body[0] in cnf.terminals)
             or (not body)
-        ) or not verify_epsilons(cfg.variables, csg.productions, cfg.productions):
+        ) or not verify_epsilons(cnf.variables, cfg.productions, cnf.productions):
             return False
     return True
