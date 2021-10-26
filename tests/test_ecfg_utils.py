@@ -2,7 +2,12 @@ import pytest
 from pyformlang.cfg import Variable, CFG
 from pyformlang.regular_expression import Regex
 
-from project import read_ecfg_from_text, regex_to_min_dfa, read_ecfg_from_file, convert_cfg_to_ecfg
+from project import (
+    read_ecfg_from_text,
+    regex_to_min_dfa,
+    read_ecfg_from_file,
+    convert_cfg_to_ecfg,
+)
 
 
 @pytest.mark.parametrize(
@@ -55,25 +60,24 @@ def verify_regex() -> bool:
         ("""""", []),
         ("""S -> epsilon""", {Variable("S"): Regex("epsilon")}),
         (
-                """S -> a S b S""",
-                {
-                    Variable("S"): Regex("a S b S"),
-                },
+            """S -> a S b S""",
+            {
+                Variable("S"): Regex("a S b S"),
+            },
         ),
         (
-                """
+            """
                  S -> (a (S | c) b)* | S S
                  A -> a c
                  a -> b
                 """,
-                {
-                    Variable("S"): Regex("(a (S | c) b)* | S S"),
-                    Variable("A"): Regex("a c"),
-                    Variable("a"): Regex("b")
-                },
+            {
+                Variable("S"): Regex("(a (S | c) b)* | S S"),
+                Variable("A"): Regex("a c"),
+                Variable("a"): Regex("b"),
+            },
         ),
         ("""S -> (a | b)* c""", {Variable("S"): Regex("(a | b)* c")}),
-
     ],
 )
 def test_read_from_text(verify_regex, text_ecfg, expected_productions):
@@ -90,12 +94,12 @@ def test_read_from_text(verify_regex, text_ecfg, expected_productions):
         ("empty.txt", []),
         ("epsilon.txt", {Variable("S"): Regex("epsilon")}),
         (
-                "grammar.txt",
-                {
-                    Variable("S"): Regex("(a (S | c) b)* | S S"),
-                    Variable("A"): Regex("a c"),
-                    Variable("a"): Regex("b")
-                },
+            "grammar.txt",
+            {
+                Variable("S"): Regex("(a (S | c) b)* | S S"),
+                Variable("A"): Regex("a c"),
+                Variable("a"): Regex("b"),
+            },
         ),
     ],
 )
@@ -112,22 +116,22 @@ def test_read_from_file(verify_regex, filename, expected_productions):
     "cfg, expected_ecfg_productions",
     [
         (
-                """
+            """
                     S -> epsilon
                     """,
-                {Variable("S"): Regex("$")},
+            {Variable("S"): Regex("$")},
         ),
         (
-                """
+            """
                  S -> a S | c b | S S
                  A -> a c
                  a -> b
                 """,
-                {
-                    Variable("S"): Regex("a S | c b | S S"),
-                    Variable("A"): Regex("a c"),
-                    Variable("a"): Regex("b")
-                },
+            {
+                Variable("S"): Regex("a S | c b | S S"),
+                Variable("A"): Regex("a c"),
+                Variable("a"): Regex("b"),
+            },
         ),
         ("""S -> a | b c""", {Variable("S"): Regex("a | b c")}),
     ],

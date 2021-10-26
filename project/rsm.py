@@ -19,7 +19,7 @@ class Box:
     """
 
     def __init__(
-            self, variable: Variable = None, dfa: DeterministicFiniteAutomaton = None
+        self, variable: Variable = None, dfa: DeterministicFiniteAutomaton = None
     ):
         self._variable = variable
         self._dfa = dfa
@@ -61,9 +61,9 @@ class RSM:
     """
 
     def __init__(
-            self,
-            start_symbol: Variable,
-            boxes: Iterable[Box],
+        self,
+        start_symbol: Variable,
+        boxes: Iterable[Box],
     ):
         self._start_symbol = start_symbol
         self._boxes = boxes

@@ -44,9 +44,7 @@ def read_ecfg_from_text(input_text, start_symbol=Variable("S")) -> "ECFG":
         body = Regex(body_text.strip())
         productions.add(ExtendedProduction(head, body))
 
-    return ECFG(
-        variables=variables, start_symbol=start_symbol, productions=productions
-    )
+    return ECFG(variables=variables, start_symbol=start_symbol, productions=productions)
 
 
 def read_ecfg_from_file(path: str, start_symbol: str = "S") -> "ECFG":

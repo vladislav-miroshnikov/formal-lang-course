@@ -54,10 +54,10 @@ class ECFG:
     """
 
     def __init__(
-            self,
-            start_symbol: Variable = None,
-            variables: AbstractSet[Variable] = None,
-            productions: Iterable[ExtendedProduction] = None
+        self,
+        start_symbol: Variable = None,
+        variables: AbstractSet[Variable] = None,
+        productions: Iterable[ExtendedProduction] = None,
     ):
         self._start_symbol = start_symbol
         self._variables = variables or set()
