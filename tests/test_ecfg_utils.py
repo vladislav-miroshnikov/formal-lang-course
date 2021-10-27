@@ -144,4 +144,4 @@ def test_ecfg_productions(cfg, expected_ecfg_productions):
             regex_to_min_dfa(str(expected_ecfg_productions[p.head]))
         )
         for p in ecfg_productions
-    ) and len(ecfg_productions) == len(ecfg_productions)
+    ) and len(ecfg_productions) == len(expected_ecfg_productions)
