@@ -25,7 +25,7 @@ def test_wrong_text():
 
 
 @pytest.fixture
-def read_csg() -> CFG:
+def read_cfg() -> CFG:
     def _method(path: str, start_symbol: str = None) -> CFG:
         if not os.path.exists(path):
             print(path)
@@ -48,13 +48,13 @@ def read_csg() -> CFG:
     "filename, axiom",
     [("epsilon.txt", "E"), ("grammar.txt", "S"), ("random.txt", "S")],
 )
-def test_process_wcnf_from_file(read_csg, filename, axiom):
+def test_process_wcnf_from_file(read_cfg, filename, axiom):
     path = "tests/data/cfg/" + filename
 
-    csg = read_csg(path, axiom)
+    cfg = read_cfg(path, axiom)
     wcnf = process_wcnf_from_file(path, axiom)
 
-    assert is_weak_normal_form(csg, wcnf)
+    assert is_weak_normal_form(cfg, wcnf)
 
 
 @pytest.mark.parametrize(
