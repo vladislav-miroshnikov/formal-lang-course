@@ -38,6 +38,9 @@ def cyk(cfg: CFG, word: str) -> bool:
             j = i + step
             for k in range(i, j):
                 for production in cnf.productions:
-                    if production.body[0].value in d[i][k] and production.body[1].value in d[k + 1][j]:
+                    if (
+                        production.body[0].value in d[i][k]
+                        and production.body[1].value in d[k + 1][j]
+                    ):
                         d[i][j].add(production.head.value)
     return cnf.start_symbol.value in d[0][word_len - 1]
