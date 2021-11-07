@@ -33,7 +33,10 @@ def hellings(cfg: CFG, graph: nx.MultiDiGraph):
             for production in wcnf.productions:
                 if len(production.body) <= 1:
                     continue
-                if production.body[0].value != res_variable or production.body[1].value != temp_variable:
+                if (
+                    production.body[0].value != res_variable
+                    or production.body[1].value != temp_variable
+                ):
                     continue
                 if (res_node_l, production.head.value, temp_node_r) in res:
                     continue
@@ -48,7 +51,10 @@ def hellings(cfg: CFG, graph: nx.MultiDiGraph):
             for production in wcnf.productions:
                 if len(production.body) <= 1:
                     continue
-                if production.body[0].value != temp_node_l or production.body[1].value != res_variable:
+                if (
+                    production.body[0].value != temp_node_l
+                    or production.body[1].value != res_variable
+                ):
                     continue
                 if (temp_node_l, production.head.value, res_node_r) in res:
                     continue
