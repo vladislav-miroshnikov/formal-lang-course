@@ -26,7 +26,7 @@ def cyk(cfg: CFG, word: str) -> bool:
 
     cnf = cfg.to_normal_form()
 
-    d = [[set() for _ in range(word_len)]] * word_len
+    d = [[set() for _ in range(word_len)] for _ in range(word_len)]
 
     for i in range(word_len):
         for production in cnf.productions:
