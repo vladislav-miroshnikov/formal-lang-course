@@ -9,9 +9,32 @@ from project import cyk
     [
         (
             """
-                    S -> epsilon
-                    """,
-            ["", "epsilon", "abab"],
+                        S -> epsilon
+                        """,
+            [""],
+        ),
+        (
+            """
+                        S -> a S b S
+                        S -> epsilon
+                        """,
+            ["", "aabbababaaabbb", "ab", "aaaabbbb"],
+        ),
+    ],
+)
+def test_cyk_accept(cfg, words):
+    cfg = CFG.from_text(cfg)
+    assert all(cyk(cfg, word) for word in words)
+
+
+@pytest.mark.parametrize(
+    "cfg, words",
+    [
+        (
+            """
+                        S -> epsilon
+                        """,
+            ["epsilon", "abab"],
         ),
         (
             """""",
@@ -19,16 +42,16 @@ from project import cyk
         ),
         (
             """
-                    S -> a S b S
-                    S -> epsilon
-                    """,
-            ["", "aba", "aabbababaaabbb", "abcd", "ab", "aaaabbbb"],
+                        S -> a S b S
+                        S -> epsilon
+                        """,
+            ["aba", "abcd"],
         ),
     ],
 )
-def test_cyk(cfg, words):
+def test_cyk_not_accept(cfg, words):
     cfg = CFG.from_text(cfg)
-    assert all(cyk(cfg, word) == cfg.contains(word) for word in words)
+    assert all(not cyk(cfg, word) for word in words)
 
 
 @pytest.mark.parametrize(
