@@ -121,18 +121,6 @@ def test_read_from_file(verify_regex, filename, expected_productions):
                     """,
             {Variable("S"): Regex("$")},
         ),
-        (
-            """
-                 S -> a S | c b | S S
-                 A -> a c
-                 a -> b
-                """,
-            {
-                Variable("S"): Regex("a S | c b | S S"),
-                Variable("A"): Regex("a c"),
-                Variable("a"): Regex("b"),
-            },
-        ),
         ("""S -> a | b c""", {Variable("S"): Regex("a | b c")}),
     ],
 )
