@@ -33,3 +33,6 @@ from project.rsm import *
 
 import project.rsm_utils
 from project.rsm_utils import *
+
+import project.cyk
+from project.cyk import *
