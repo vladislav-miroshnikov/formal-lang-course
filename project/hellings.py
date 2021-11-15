@@ -2,14 +2,29 @@ from collections import Set
 from typing import Tuple
 
 import networkx as nx
-from pyformlang.cfg import CFG, Variable
+from pyformlang.cfg import CFG
 
 from project import convert_cfg_to_wcnf
 
-__all__ = ["hellings", "cfpq"]
+__all__ = ["hellings"]
 
 
-def hellings(cfg: CFG, graph: nx.MultiDiGraph):
+def hellings(cfg: CFG, graph: nx.MultiDiGraph) -> Set[Tuple[int, str, int]]:
+    """
+    Hellings algorithm for solving Context-Free Path Querying problem
+
+    Parameters
+    ----------
+    graph: nx.MultiDiGraph
+        input graph
+    cfg: CFG
+        input cfg
+
+    Returns
+    -------
+    Set[Tuple[int, str, int]]:
+        set tuples (node, terminal, node)
+    """
     wcnf = convert_cfg_to_wcnf(cfg)
 
     eps_prod_heads = [p.head.value for p in wcnf.productions if not p.body]
@@ -56,20 +71,3 @@ def hellings(cfg: CFG, graph: nx.MultiDiGraph):
         r |= r_temp
 
     return r
-
-
-def cfpq(
-    graph: nx.MultiDiGraph,
-    cfg: CFG,
-    start_nodes: Set[int] = None,
-    final_nodes: Set[int] = None,
-    start_var: Variable = Variable("S"),
-) -> Set[Tuple[int, int]]:
-    cfg._start_symbol = start_var
-    reach_pairs = {(u, v) for u, h, v in hellings(cfg, graph) if h == cfg.start_symbol}
-    if start_nodes:
-        reach_pairs = {(u, v) for u, v in reach_pairs if u in start_nodes}
-    if final_nodes:
-        reach_pairs = {(u, v) for u, v in reach_pairs if v in final_nodes}
-
-    return reach_pairs

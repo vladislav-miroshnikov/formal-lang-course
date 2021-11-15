@@ -2,10 +2,10 @@ from collections import namedtuple
 from itertools import product
 
 import pytest
+from cfpq_data import labeled_cycle_graph
 from pyformlang.cfg import CFG
 
-from project import hellings, create_two_cycles_graph, cfpq
-from cfpq_data import labeled_cycle_graph
+from project import hellings, create_two_cycles_graph, matrix_cfpq, hellings_cfpq
 
 
 @pytest.mark.parametrize(
@@ -72,6 +72,11 @@ def test_hellings(cfg, graph, exp_ans):
 Config = namedtuple("Config", ["start_var", "start_nodes", "final_nodes", "exp_ans"])
 
 
+@pytest.fixture(params=[matrix_cfpq, hellings_cfpq])
+def cfpq(request):
+    return request.param
+
+
 @pytest.mark.parametrize(
     "cfg, graph, confs",
     [
@@ -118,7 +123,7 @@ Config = namedtuple("Config", ["start_var", "start_nodes", "final_nodes", "exp_a
         ),
     ],
 )
-def test_cfpq(cfg, graph, confs):
+def test_cfpq(cfpq, cfg, graph, confs):
     assert all(
         cfpq(
             graph,
