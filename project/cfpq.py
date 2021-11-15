@@ -9,11 +9,11 @@ __all__ = ["hellings_cfpq", "matrix_cfpq"]
 
 
 def hellings_cfpq(
-        graph: nx.MultiDiGraph,
-        cfg: CFG,
-        start_nodes: Set[int] = None,
-        final_nodes: Set[int] = None,
-        start_var: Variable = Variable("S"),
+    graph: nx.MultiDiGraph,
+    cfg: CFG,
+    start_nodes: Set[int] = None,
+    final_nodes: Set[int] = None,
+    start_var: Variable = Variable("S"),
 ) -> Set[Tuple[int, int]]:
     """
     Context-Free Path Querying based on Hellings Algorithm
@@ -47,11 +47,11 @@ def hellings_cfpq(
 
 
 def matrix_cfpq(
-        graph: nx.MultiDiGraph,
-        cfg: CFG,
-        start_nodes: Set[int] = None,
-        final_nodes: Set[int] = None,
-        start_variable: Variable = Variable("S"),
+    graph: nx.MultiDiGraph,
+    cfg: CFG,
+    start_nodes: Set[int] = None,
+    final_nodes: Set[int] = None,
+    start_variable: Variable = Variable("S"),
 ) -> Set[Tuple[int, int]]:
     """
     Context-Free Path Querying based on matrix multiplication
@@ -101,7 +101,7 @@ def matrix_cfpq(
         for p in variable_productions:
             old_nnz = matrices[p.head.value].nnz
             matrices[p.head.value] += (
-                    matrices[p.body[0].value] @ matrices[p.body[1].value]
+                matrices[p.body[0].value] @ matrices[p.body[1].value]
             )
             new_nnz = matrices[p.head.value].nnz
             changed = old_nnz != new_nnz
