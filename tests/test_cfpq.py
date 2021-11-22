@@ -13,15 +13,15 @@ from project import hellings, create_two_cycles_graph, matrix_cfpq, hellings_cfp
     [
         (
             """
-                S -> epsilon
-                """,
+                    S -> epsilon
+                    """,
             labeled_cycle_graph(3, "a", verbose=False),
             {(1, "S", 1), (2, "S", 2), (0, "S", 0)},
         ),
         (
             """
-                    S -> b | epsilon
-                    """,
+                        S -> b | epsilon
+                        """,
             labeled_cycle_graph(4, "b", verbose=False),
             {
                 (1, "S", 1),
@@ -36,12 +36,12 @@ from project import hellings, create_two_cycles_graph, matrix_cfpq, hellings_cfp
         ),
         (
             """
-                    S -> A B
-                    S -> A S1
-                    S1 -> S B
-                    A -> a
-                    B -> b
-                    """,
+                        S -> A B
+                        S -> A S1
+                        S1 -> S B
+                        A -> a
+                        B -> b
+                        """,
             create_two_cycles_graph(2, 1, ("a", "b")),
             {
                 (0, "S1", 3),
@@ -66,7 +66,7 @@ from project import hellings, create_two_cycles_graph, matrix_cfpq, hellings_cfp
     ],
 )
 def test_hellings(cfg, graph, exp_ans):
-    assert hellings(CFG.from_text(cfg), graph) == exp_ans
+    assert hellings(graph, CFG.from_text(cfg)) == exp_ans
 
 
 Config = namedtuple("Config", ["start_var", "start_nodes", "final_nodes", "exp_ans"])
@@ -82,9 +82,9 @@ def cfpq(request):
     [
         (
             """
-                    A -> a A | epsilon
-                    B -> b B | b
-                    """,
+                        A -> a A | epsilon
+                        B -> b B | b
+                        """,
             labeled_cycle_graph(3, "a", verbose=False),
             [
                 Config("A", {0}, {0}, {(0, 0)}),
@@ -94,8 +94,8 @@ def cfpq(request):
         ),
         (
             """
-                    S -> epsilon
-                    """,
+                        S -> epsilon
+                        """,
             labeled_cycle_graph(4, "b", verbose=False),
             [
                 Config("S", {0, 1}, {0, 1}, {(0, 0), (1, 1)}),
@@ -105,12 +105,12 @@ def cfpq(request):
         ),
         (
             """
-                        S -> A B
-                        S -> A S1
-                        S1 -> S B
-                        A -> a
-                        B -> b
-                        """,
+                            S -> A B
+                            S -> A S1
+                            S1 -> S B
+                            A -> a
+                            B -> b
+                            """,
             create_two_cycles_graph(2, 1, ("a", "b")),
             [
                 Config(
