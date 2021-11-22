@@ -2,10 +2,10 @@ from collections import namedtuple
 from itertools import product
 
 import pytest
+from cfpq_data import labeled_cycle_graph
 from pyformlang.cfg import CFG
 
-from project import hellings, create_two_cycles_graph, cfpq
-from cfpq_data import labeled_cycle_graph
+from project import hellings, create_two_cycles_graph, matrix_cfpq, hellings_cfpq
 
 
 @pytest.mark.parametrize(
@@ -13,15 +13,15 @@ from cfpq_data import labeled_cycle_graph
     [
         (
             """
-                S -> epsilon
-                """,
+                    S -> epsilon
+                    """,
             labeled_cycle_graph(3, "a", verbose=False),
             {(1, "S", 1), (2, "S", 2), (0, "S", 0)},
         ),
         (
             """
-                    S -> b | epsilon
-                    """,
+                        S -> b | epsilon
+                        """,
             labeled_cycle_graph(4, "b", verbose=False),
             {
                 (1, "S", 1),
@@ -36,12 +36,12 @@ from cfpq_data import labeled_cycle_graph
         ),
         (
             """
-                    S -> A B
-                    S -> A S1
-                    S1 -> S B
-                    A -> a
-                    B -> b
-                    """,
+                        S -> A B
+                        S -> A S1
+                        S1 -> S B
+                        A -> a
+                        B -> b
+                        """,
             create_two_cycles_graph(2, 1, ("a", "b")),
             {
                 (0, "S1", 3),
@@ -66,10 +66,15 @@ from cfpq_data import labeled_cycle_graph
     ],
 )
 def test_hellings(cfg, graph, exp_ans):
-    assert hellings(CFG.from_text(cfg), graph) == exp_ans
+    assert hellings(graph, CFG.from_text(cfg)) == exp_ans
 
 
 Config = namedtuple("Config", ["start_var", "start_nodes", "final_nodes", "exp_ans"])
+
+
+@pytest.fixture(params=[matrix_cfpq, hellings_cfpq])
+def cfpq(request):
+    return request.param
 
 
 @pytest.mark.parametrize(
@@ -77,9 +82,9 @@ Config = namedtuple("Config", ["start_var", "start_nodes", "final_nodes", "exp_a
     [
         (
             """
-                    A -> a A | epsilon
-                    B -> b B | b
-                    """,
+                        A -> a A | epsilon
+                        B -> b B | b
+                        """,
             labeled_cycle_graph(3, "a", verbose=False),
             [
                 Config("A", {0}, {0}, {(0, 0)}),
@@ -89,8 +94,8 @@ Config = namedtuple("Config", ["start_var", "start_nodes", "final_nodes", "exp_a
         ),
         (
             """
-                    S -> epsilon
-                    """,
+                        S -> epsilon
+                        """,
             labeled_cycle_graph(4, "b", verbose=False),
             [
                 Config("S", {0, 1}, {0, 1}, {(0, 0), (1, 1)}),
@@ -100,12 +105,12 @@ Config = namedtuple("Config", ["start_var", "start_nodes", "final_nodes", "exp_a
         ),
         (
             """
-                        S -> A B
-                        S -> A S1
-                        S1 -> S B
-                        A -> a
-                        B -> b
-                        """,
+                            S -> A B
+                            S -> A S1
+                            S1 -> S B
+                            A -> a
+                            B -> b
+                            """,
             create_two_cycles_graph(2, 1, ("a", "b")),
             [
                 Config(
@@ -118,7 +123,7 @@ Config = namedtuple("Config", ["start_var", "start_nodes", "final_nodes", "exp_a
         ),
     ],
 )
-def test_cfpq(cfg, graph, confs):
+def test_cfpq(cfpq, cfg, graph, confs):
     assert all(
         cfpq(
             graph,
