@@ -1,9 +1,9 @@
 from typing import Set, Tuple
 import networkx as nx
 from pyformlang.cfg import CFG, Variable
-from project import hellings, matrix
+from project import hellings, matrix, tensor
 
-__all__ = ["hellings_cfpq", "matrix_cfpq"]
+__all__ = ["hellings_cfpq", "matrix_cfpq", "tensor_cfpq"]
 
 
 def _cfpq(
@@ -104,3 +104,36 @@ def matrix_cfpq(
     cfg._start_symbol = start_variable
 
     return _cfpq(set(matrix(graph, cfg)), cfg, start_nodes, final_nodes)
+
+
+def tensor_cfpq(
+    graph: nx.MultiDiGraph,
+    cfg: CFG,
+    start_nodes: Set[int] = None,
+    final_nodes: Set[int] = None,
+    start_variable: Variable = Variable("S"),
+) -> Set[Tuple[int, int]]:
+    """
+    Context-Free Path Querying based on tensor algorithm and RSM
+
+    Parameters
+    ----------
+    graph: nx.MultiDiGraph
+        input graph
+    cfg: CFG
+        input CFG
+    start_nodes: Set[int]
+        set of start nodes in given graph
+    final_nodes: Set[int]
+        set of final nodes in given graph
+    start_variable: Variable
+        start variable in CFG
+
+    Returns
+    -------
+    Set[Tuple[int, int]]:
+        set of tuples (node, node)
+    """
+    cfg._start_symbol = start_variable
+
+    return _cfpq(set(tensor(graph, cfg)), cfg, start_nodes, final_nodes)

@@ -1,16 +1,21 @@
-from collections import Set
 from typing import Tuple
 
 import networkx as nx
 from pyformlang.cfg import CFG
 from scipy import sparse
+from scipy.sparse import dok_matrix, identity
 
-from project import convert_cfg_to_wcnf
+from project import (
+    convert_cfg_to_wcnf,
+    get_nfa_by_graph,
+    BooleanMatrices,
+    intersect_boolean_matrices,
+)
 
-__all__ = ["hellings", "matrix"]
+__all__ = ["hellings", "matrix", "tensor"]
 
 
-def hellings(graph: nx.MultiDiGraph, cfg: CFG) -> Set[Tuple[int, str, int]]:
+def hellings(graph: nx.MultiDiGraph, cfg: CFG) -> set[Tuple[int, str, int]]:
     """
     Hellings algorithm for solving Context-Free Path Querying problem
 
@@ -23,7 +28,7 @@ def hellings(graph: nx.MultiDiGraph, cfg: CFG) -> Set[Tuple[int, str, int]]:
 
     Returns
     -------
-    Set[Tuple[int, str, int]]:
+    set[Tuple[int, str, int]]:
         set tuples (node, terminal, node)
     """
     wcnf = convert_cfg_to_wcnf(cfg)
@@ -74,7 +79,7 @@ def hellings(graph: nx.MultiDiGraph, cfg: CFG) -> Set[Tuple[int, str, int]]:
     return r
 
 
-def matrix(graph: nx.MultiDiGraph, cfg: CFG) -> Set[Tuple[int, str, int]]:
+def matrix(graph: nx.MultiDiGraph, cfg: CFG) -> set[Tuple[int, str, int]]:
     """
     Matrix algorithm for solving Context-Free Path Querying problem
 
@@ -87,7 +92,7 @@ def matrix(graph: nx.MultiDiGraph, cfg: CFG) -> Set[Tuple[int, str, int]]:
 
     Returns
     -------
-    Set[Tuple[int, str, int]]:
+    set[Tuple[int, str, int]]:
         set tuples (node, terminal, node)
     """
     wcnf = convert_cfg_to_wcnf(cfg)
@@ -126,3 +131,93 @@ def matrix(graph: nx.MultiDiGraph, cfg: CFG) -> Set[Tuple[int, str, int]]:
         for variable, var_matrix in matrices.items()
         for u, v in zip(*var_matrix.nonzero())
     }
+
+
+def tensor(graph: nx.MultiDiGraph, cfg: CFG) -> set[Tuple[int, str, int]]:
+    """
+    Tensor algorithm for solving Context-Free Path Querying problem
+
+    Parameters
+    ----------
+    graph: nx.MultiDiGraph
+        input graph
+    cfg: CFG
+        input cfg
+
+    Returns
+    -------
+    set[Tuple[int, str, int]]:
+        set tuples (node, terminal, node)
+    """
+    wcnf = convert_cfg_to_wcnf(cfg)
+
+    n = sum(len(p.body) + 1 for p in wcnf.productions)
+    rsm_heads = dict()
+    nonterm = set()
+    boxes = dict()
+    start_states = set()
+    final_states = set()
+    counter = 0
+
+    nfa_by_graph = get_nfa_by_graph(graph)
+    bm = BooleanMatrices(nfa_by_graph)
+
+    for p in wcnf.productions:
+        nonterm.add(p.head.value)
+        start_states.add(counter)
+        final_states.add(counter + len(p.body))
+        rsm_heads[(counter, counter + len(p.body))] = p.head.value
+        for b in p.body:
+            m = boxes.get(b.value, dok_matrix((n, n), dtype=bool))
+            m[counter, counter + 1] = True
+            boxes[b.value] = m
+            counter += 1
+        counter += 1
+
+    for p in wcnf.productions:
+        if len(p.body) == 0:
+            bm.bool_matrices[p.head.value] = identity(
+                bm.states_count, dtype=bool
+            ).todok()
+
+    changed = True
+    bfa = BooleanMatrices()
+    bfa.start_states = start_states
+    bfa.final_states = final_states
+    bfa.bool_matrices = boxes
+    bfa.states_count = n
+
+    while changed:
+        changed = False
+        transitive_closure = intersect_boolean_matrices(
+            bfa, bm
+        ).make_transitive_closure()
+        x, y = transitive_closure.nonzero()
+
+        for (i, j) in zip(x, y):
+            rfa_from = i // bm.states_count
+            rfa_to = j // bm.states_count
+            graph_from = i % bm.states_count
+            graph_to = j % bm.states_count
+
+            if (rfa_from, rfa_to) not in rsm_heads:
+                continue
+
+            variable = rsm_heads[(rfa_from, rfa_to)]
+            m = bm.bool_matrices.get(
+                variable,
+                dok_matrix((bm.states_count, bm.states_count), dtype=bool),
+            )
+            if not m[graph_from, graph_to]:
+                changed = True
+                m[graph_from, graph_to] = True
+                bm.bool_matrices[variable] = m
+
+    triplets = set()
+    for key, m in bm.bool_matrices.items():
+        if key not in nonterm:
+            continue
+        for (u, v), _ in m.items():
+            triplets.add((u, key, v))
+
+    return triplets
