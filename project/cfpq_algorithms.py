@@ -15,7 +15,7 @@ from project import (
 __all__ = ["hellings", "matrix", "tensor"]
 
 
-def hellings(graph: nx.MultiDiGraph, cfg: CFG) -> set[Tuple[int, str, int]]:
+def hellings(graph: nx.MultiDiGraph, cfg: CFG) -> Set[Tuple[int, str, int]]:
     """
     Hellings algorithm for solving Context-Free Path Querying problem
 
@@ -79,7 +79,7 @@ def hellings(graph: nx.MultiDiGraph, cfg: CFG) -> set[Tuple[int, str, int]]:
     return r
 
 
-def matrix(graph: nx.MultiDiGraph, cfg: CFG) -> set[Tuple[int, str, int]]:
+def matrix(graph: nx.MultiDiGraph, cfg: CFG) -> Set[Tuple[int, str, int]]:
     """
     Matrix algorithm for solving Context-Free Path Querying problem
 
@@ -133,7 +133,7 @@ def matrix(graph: nx.MultiDiGraph, cfg: CFG) -> set[Tuple[int, str, int]]:
     }
 
 
-def tensor(graph: nx.MultiDiGraph, cfg: CFG) -> set[Tuple[int, str, int]]:
+def tensor(graph: nx.MultiDiGraph, cfg: CFG) -> Set[Tuple[int, str, int]]:
     """
     Tensor algorithm for solving Context-Free Path Querying problem
 
