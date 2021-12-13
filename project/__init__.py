@@ -40,8 +40,8 @@ from project.cyk import *
 import project.wcnf_utils
 from project.wcnf_utils import *
 
-import project.cfpq_algorithms
-from project.cfpq_algorithms import *
+#import project.cfpq_algorithms
+#from project.cfpq_algorithms import *
 
 import project.cfpq
 from project.cfpq import *
