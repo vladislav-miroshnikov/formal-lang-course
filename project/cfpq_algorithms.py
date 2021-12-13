@@ -12,10 +12,10 @@ from project import (
     intersect_boolean_matrices,
 )
 
-__all__ = ["hellings", "matrix", "tensor"]
+__all__ = ["hellings_alg", "matrix", "tensor"]
 
 
-def hellings(graph: nx.MultiDiGraph, cfg: CFG) -> set[Tuple[int, str, int]]:
+def hellings_alg(graph: nx.MultiDiGraph, cfg: CFG) -> set[Tuple[int, str, int]]:
     """
     Hellings algorithm for solving Context-Free Path Querying problem
 

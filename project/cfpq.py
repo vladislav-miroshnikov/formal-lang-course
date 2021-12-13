@@ -1,7 +1,7 @@
 from typing import Set, Tuple
 import networkx as nx
 from pyformlang.cfg import CFG, Variable
-from project import hellings, matrix, tensor
+from project import hellings_alg, matrix, tensor
 
 __all__ = ["hellings_cfpq", "matrix_cfpq", "tensor_cfpq"]
 
@@ -70,7 +70,7 @@ def hellings_cfpq(
     """
     cfg._start_symbol = start_var
 
-    return _cfpq(set(hellings(graph, cfg)), cfg, start_nodes, final_nodes)
+    return _cfpq(set(hellings_alg(graph, cfg)), cfg, start_nodes, final_nodes)
 
 
 def matrix_cfpq(
