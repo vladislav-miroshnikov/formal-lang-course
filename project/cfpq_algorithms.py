@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Set
 
 import networkx as nx
 from pyformlang.cfg import CFG
