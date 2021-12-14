@@ -180,18 +180,19 @@ def tensor(graph: nx.MultiDiGraph, cfg: CFG) -> Set[Tuple[int, str, int]]:
                 bm.states_count, dtype=bool
             ).todok()
 
-    changed = True
     bfa = BooleanMatrices()
     bfa.start_states = start_states
     bfa.final_states = final_states
     bfa.bool_matrices = boxes
     bfa.states_count = n
 
-    while changed:
-        changed = False
+    prev_nnz = -2
+    new_nnz = -1
+    while prev_nnz != new_nnz:
         transitive_closure = intersect_boolean_matrices(
             bfa, bm
         ).make_transitive_closure()
+        prev_nnz, new_nnz = new_nnz, transitive_closure.nnz
         x, y = transitive_closure.nonzero()
 
         for (i, j) in zip(x, y):
@@ -208,10 +209,8 @@ def tensor(graph: nx.MultiDiGraph, cfg: CFG) -> Set[Tuple[int, str, int]]:
                 variable,
                 dok_matrix((bm.states_count, bm.states_count), dtype=bool),
             )
-            if not m[graph_from, graph_to]:
-                changed = True
-                m[graph_from, graph_to] = True
-                bm.bool_matrices[variable] = m
+            m[graph_from, graph_to] = True
+            bm.bool_matrices[variable] = m
 
     triplets = set()
     for key, m in bm.bool_matrices.items():
