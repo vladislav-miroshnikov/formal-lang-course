@@ -1,6 +1,8 @@
 from typing import Set, Tuple
+
 import networkx as nx
 from pyformlang.cfg import CFG, Variable
+
 from project import hellings, matrix, tensor
 
 __all__ = ["hellings_cfpq", "matrix_cfpq", "tensor_cfpq"]
