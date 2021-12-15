@@ -1,6 +1,6 @@
 import os
 
-from pyformlang.cfg import CFG, Variable, Production, Epsilon
+from pyformlang.cfg import CFG, Variable
 
 __all__ = ["process_wcnf_from_file", "process_wcnf_from_text", "is_weak_normal_form"]
 
