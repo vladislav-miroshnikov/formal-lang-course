@@ -17,6 +17,12 @@ __all__ = ["hellings", "matrix", "tensor"]
 
 def hellings(graph: nx.MultiDiGraph, cfg: CFG) -> set[Tuple[int, str, int]]:
     """
+
+
+
+
+
+
     Hellings algorithm for solving Context-Free Path Querying problem
 
     Parameters
