@@ -7,7 +7,7 @@ prog = List<stmt>
 stmt =
     bind of var * expr
   | print of expr
-  
+
 val =
     String of string
   | Int of int
@@ -16,7 +16,7 @@ val =
   | List of string
   | List of int
   | List of bool
-  
+
 expr =
     Var of var                   // переменные
   | Val of val                   // константы
@@ -67,11 +67,11 @@ VAL ->
     | LIST<INT>
     | LIST<VALUE_STRING>
     | LIST<BOOL>
-    
+
 SET ->
     SET<VAL>
     | range ( INT , INT )
-    
+
 EXPR -> VAR | VAL | GRAPH
 
 GRAPH -> VALUE_STRING
@@ -290,4 +290,3 @@ _____________________________________
 _____________________________________
 [Load (p)](b1) => (fa | fa.start = fa.vertices, fa.final = fa.vertices), b1
 ```
-
