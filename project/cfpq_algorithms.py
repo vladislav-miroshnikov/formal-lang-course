@@ -55,8 +55,8 @@ def hellings(graph: nx.MultiDiGraph, cfg: CFG) -> Set[Tuple[int, str, int]]:
                     (u, p.head.value, m)
                     for p in var_productions
                     if p.body[0].value == M
-                       and p.body[1].value == N
-                       and (u, p.head.value, m) not in r
+                    and p.body[1].value == N
+                    and (u, p.head.value, m) not in r
                 }
                 new |= triplets
                 r_temp |= triplets
@@ -69,8 +69,8 @@ def hellings(graph: nx.MultiDiGraph, cfg: CFG) -> Set[Tuple[int, str, int]]:
                     (n, p.head.value, v)
                     for p in var_productions
                     if p.body[0].value == N
-                       and p.body[1].value == M
-                       and (n, p.head.value, v) not in r
+                    and p.body[1].value == M
+                    and (n, p.head.value, v) not in r
                 }
                 new |= triplets
                 r_temp |= triplets
@@ -121,7 +121,7 @@ def matrix(graph: nx.MultiDiGraph, cfg: CFG) -> Set[Tuple[int, str, int]]:
         for p in variable_productions:
             old_nnz = matrices[p.head.value].nnz
             matrices[p.head.value] += (
-                    matrices[p.body[0].value] @ matrices[p.body[1].value]
+                matrices[p.body[0].value] @ matrices[p.body[1].value]
             )
             new_nnz = matrices[p.head.value].nnz
             changed = changed or old_nnz != new_nnz

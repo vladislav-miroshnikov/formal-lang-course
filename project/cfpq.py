@@ -3,16 +3,18 @@ from typing import Set, Tuple
 import networkx as nx
 from pyformlang.cfg import CFG, Variable
 
+from project import hellings, matrix, tensor
+
 from project.cfpq_algorithms import hellings, matrix, tensor
 
 __all__ = ["hellings_cfpq", "matrix_cfpq", "tensor_cfpq"]
 
 
 def _cfpq(
-        algorithm_result: Set[Tuple[int, str, int]],
-        cfg: CFG,
-        start_nodes: Set[int] = None,
-        final_nodes: Set[int] = None,
+    algorithm_result: Set[Tuple[int, str, int]],
+    cfg: CFG,
+    start_nodes: Set[int] = None,
+    final_nodes: Set[int] = None,
 ) -> Set[Tuple[int, int]]:
     """
     Internal function for CFPQ
@@ -43,11 +45,11 @@ def _cfpq(
 
 
 def hellings_cfpq(
-        graph: nx.MultiDiGraph,
-        cfg: CFG,
-        start_nodes: Set[int] = None,
-        final_nodes: Set[int] = None,
-        start_var: Variable = Variable("S"),
+    graph: nx.MultiDiGraph,
+    cfg: CFG,
+    start_nodes: Set[int] = None,
+    final_nodes: Set[int] = None,
+    start_var: Variable = Variable("S"),
 ) -> Set[Tuple[int, int]]:
     """
     Context-Free Path Querying based on Hellings Algorithm
@@ -76,11 +78,11 @@ def hellings_cfpq(
 
 
 def matrix_cfpq(
-        graph: nx.MultiDiGraph,
-        cfg: CFG,
-        start_nodes: Set[int] = None,
-        final_nodes: Set[int] = None,
-        start_variable: Variable = Variable("S"),
+    graph: nx.MultiDiGraph,
+    cfg: CFG,
+    start_nodes: Set[int] = None,
+    final_nodes: Set[int] = None,
+    start_variable: Variable = Variable("S"),
 ) -> Set[Tuple[int, int]]:
     """
     Context-Free Path Querying based on matrix multiplication
@@ -109,11 +111,11 @@ def matrix_cfpq(
 
 
 def tensor_cfpq(
-        graph: nx.MultiDiGraph,
-        cfg: CFG,
-        start_nodes: Set[int] = None,
-        final_nodes: Set[int] = None,
-        start_variable: Variable = Variable("S"),
+    graph: nx.MultiDiGraph,
+    cfg: CFG,
+    start_nodes: Set[int] = None,
+    final_nodes: Set[int] = None,
+    start_variable: Variable = Variable("S"),
 ) -> Set[Tuple[int, int]]:
     """
     Context-Free Path Querying based on tensor algorithm and RSM
