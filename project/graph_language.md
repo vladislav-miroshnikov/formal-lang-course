@@ -5,17 +5,17 @@
 ```
 prog = List<stmt>
 stmt =
-    bind of var * expr
-  | print of expr
+    Bind of var * expr
+  | Print of expr
 
 val =
     String of string
   | Int of int
   | Bool of bool
-  | Path of path
-  | List of string
-  | List of int
-  | List of bool
+  | Graph of graph
+  | Labels of labels
+  | Vertices of vertices
+  | Edges of edges
 
 expr =
     Var of var                   // переменные
@@ -37,7 +37,6 @@ expr =
   | Concat of expr * expr        // конкатенация языков
   | Union of expr * expr         // объединение языков
   | Star of expr                 // замыкание языков (звезда Клини)
-  | Smb of expr                  // единичный переход
 
 lambda =
     Lambda of List<var> * expr
@@ -45,94 +44,155 @@ lambda =
 
 ### Описание конкретного синтаксиса языка
 ```
-PROGRAM -> STMT ; PROGRAM | eps
-STMT -> VAR = EXPR | print(EXPR)
+prog -> (stmt SEMI EOL?)+
+stmt -> PRINT expr
+      | var ASSIGN expr
 
-LOWERCASE -> [a-z]
-UPPERCASE -> [A-Z]
+expr -> LP expr RP
+      | anfunc
+      | mapping
+      | filtering
+      | var
+      | val
+      | NOT expr
+      | expr IN expr
+      | expr AND expr
+      | expr DOT expr
+      | expr OR expr
+      | expr KLEENE
+
+graph -> load_graph
+       | cfg
+       | string
+       | set_start
+       | set_final
+       | add_start
+       | add_final
+       | LP graph RP
+
+load_graph -> LOAD path
+set_start -> SET START OF (graph | var) TO (vertices | var)
+set_final -> SET FINAL OF (graph | var) TO (vertices | var)
+add_start -> ADD START OF (graph | var) TO (vertices | var)
+add_final -> ADD FINAL OF (graph | var) TO (vertices | var)
+
+vertices -> vertex
+          | vertices_range
+          | vertices_set
+          | select_reachable
+          | select_final
+          | select_start
+          | select_vertices
+          | LP vertices RP
+vertex -> INT
+
+edges -> edge
+       | edges_set
+       | select_edges
+edge -> LP vertex COMMA label COMMA vertex RP
+      | LP vertex COMMA vertex RP
+
+labels -> label
+        | labels_set
+        | select_labels
+label -> string
+
+anfunc -> FUN variables COLON expr
+        | LP anfunc RP
+mapping -> MAP anfunc expr
+filtering -> FILTER anfunc expr
+select_edges -> SELECT EDGES FROM (graph | var)
+select_labels -> SELECT LABELS FROM (graph | var)
+select_reachable -> SELECT REACHABLE VERTICES FROM (graph | var)
+select_final -> SELECT FINAL VERTICES FROM (graph | var)
+select_start -> SELECT START VERTICES FROM (graph | var)
+select_vertices -> SELECT VERTICES FROM (graph | var)
+
+vertices_range -> LCB INT DOT DOT INT RCB
+cfg -> CFG
+string -> STRING
+path -> STRING
+
+vertices_set -> LCB (INT COMMA)* (INT)? RCB
+              | vertices_range
+labels_set -> LCB (STRING COMMA)* (STRING)? RCB
+edges_set -> LCB (edge COMMA)* (edge)? RCB
+
+var -> VAR
+var_edge -> LP var COMMA var RP
+          | LP var COMMA var COMMA var RP
+          | LP LP var COMMA var RP COMMA var COMMA LP var COMMA var RP RP
+variables -> (var COMMA)* var? | var_edge
+
+val -> boolean
+     | graph
+     | edges
+     | labels
+     | vertices
+
+boolean -> BOOL
+
+ASSIGN -> '='
+AND -> '&'
+OR -> '|'
+NOT -> 'not'
+IN -> 'in'
+KLEENE -> '*'
+DOT -> '.'
+COMMA -> ','
+SEMI -> ';'
+LCB -> '{'
+RCB -> '}'
+LP -> '('
+RP -> ')'
+QUOT -> '"'
+TRIPLE_QUOT -> '"""'
+COLON -> ':'
+ARROW -> '->'
+
+FUN -> 'fun'
+LOAD -> 'load'
+SET -> 'set'
+ADD -> 'add'
+OF -> 'of'
+TO -> 'to'
+VERTICES -> 'vertices'
+LABELS -> 'labels'
+SELECT -> 'select'
+EDGES -> 'edges'
+REACHABLE -> 'reachable'
+START -> 'start'
+FINAL -> 'final'
+FROM -> 'from'
+FILTER -> 'filter'
+MAP -> 'map'
+PRINT -> 'print'
+BOOL -> TRUE | FALSE
+TRUE -> 'true'
+FALSE -> 'false'
+
+
+VAR -> ('_' | CHAR) ID_CHAR*
+INT -> NONZERO_DIGIT DIGIT* | '0'
+CFG -> TRIPLE_QUOT (CHAR | DIGIT | ' ' | '\n' | ARROW)* TRIPLE_QUOT
+STRING -> QUOT (CHAR | DIGIT | '_' | ' ')* QUOT
+ID_CHAR -> (CHAR | DIGIT | '_')
+CHAR -> [a-z] | [A-Z]
+NONZERO_DIGIT -> [1-9]
 DIGIT -> [0-9]
-
-INT -> 0 | [1-9] DIGIT*
-STRING -> [_ | . | LOWERCASE | UPPERCASE] [_ | . | LOWERCASE | UPPERCASE | DIGIT]*
-BOOL -> true | false
-PATH -> " [/ | _ | . | LOWERCASE | UPPERCASE | DIGIT]+ "
-VALUE_STRING -> " STRING "
-
-VAR -> STRING
-VAL ->
-    INT
-    | VALUE_STRING
-    | BOOL
-    | PATH
-    | LIST<INT>
-    | LIST<VALUE_STRING>
-    | LIST<BOOL>
-
-SET ->
-    SET<VAL>
-    | range ( INT , INT )
-
-EXPR -> VAR | VAL | GRAPH
-
-GRAPH -> VALUE_STRING
-GRAPH -> set_start(SET, GRAPH)
-GRAPH -> set_final(SET, GRAPH)
-GRAPH -> add_start(SET, GRAPH)
-GRAPH -> add_final(SET, GRAPH)
-GRAPH -> load(PATH)
-GRAPH -> intersect(GRAPH, GRAPH)
-GRAPH -> concat(GRAPH, GRAPH)
-GRAPH -> union(GRAPH, GRAPH)
-GRAPH -> kleen_star(GRAPH, GRAPH)
-
-EXPR -> VERTEX | VERTICES
-VERTEX -> INT
-VERTICES -> SET<VERTEX> | range ( INT , INT )
-VERTICES -> get_start(GRAPH)
-VERTICES -> get_final(SET, GRAPH)
-
-EXPR -> PAIR_OF_VERTICES
-PAIR_OF_VERTICES -> SET<(INT, INT)>
-PAIR_OF_VERTICES -> get_reachable(GRAPH)
-
-VERTICES -> get_vertices(GRAPH)
-
-EXPR -> EDGE | EDGES
-EDGE -> (INT, VALUE_STRING, INT) | (INT, INT, INT)
-EDGES -> SET<EDGE>
-EDGES -> get_edges(GRAPH)
-
-EXPR -> LABELS
-LABELS -> SET<INT> | SET<VALUE_STRING>
-LABELS -> get_labels(GRAPH)
-
-EXPR -> map(LAMBDA, EXPR)
-EXPR -> filter(LAMBDA, EXPR)
-
-LAMBDA -> (LIST<VAR> -> [BOOL_EXPR | EXPR])
-BOOL_EXPR ->
-    BOOL_EXPR or BOOL_EXPR
-    | BOOL_EXPR and BOOL_EXPR
-    | not BOOL_EXPR
-    | BOOL
-    | has_label(EDGE, VALUE_STRING)
-    | is_start(VERTEX)
-    | is_final(VERTEX)
-    | X in SET<X>
-
-LIST<X> -> list(X [, X]*) | list()
-SET<X> -> set(X [, X]*) | set()
+WS -> [ \t\r]+
+EOL -> [\n]+
 ```
 
 ### Пример программы
 Данный скрипт загружает граф "go", задает стартовые и финальные вершины, создает запрос, выполняет пересечение и печатает результат.
 ```
-graph = load("go")
-h = set_start(set_final(get_vertices(graph), graph)), range(1, 10))
-l = union("l1", "l2")
-query = kleen_star(union("type", l))
-res = intersect(graph, query)
-print(res)
+graph_go = load "go";
+h = set start of (set final of graph_go to (select vertices from graph_go)) to {1..100};
+l = "l1" | "l2";
+query = ("type" | l)*;
+res = graph_go & query;
+print res;
 ```
 
 
