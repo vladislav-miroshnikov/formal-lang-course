@@ -111,7 +111,7 @@ select_vertices -> SELECT VERTICES FROM (graph | var)
 vertices_range -> LCB INT DOT DOT INT RCB
 cfg -> CFG
 string -> STRING
-path -> STRING
+path -> PATH
 
 vertices_set -> LCB (INT COMMA)* (INT)? RCB
               | vertices_range
@@ -176,6 +176,7 @@ VAR -> ('_' | CHAR) ID_CHAR*
 INT -> NONZERO_DIGIT DIGIT* | '0'
 CFG -> TRIPLE_QUOT (CHAR | DIGIT | ' ' | '\n' | ARROW)* TRIPLE_QUOT
 STRING -> QUOT (CHAR | DIGIT | '_' | ' ')* QUOT
+PATH -> QUOT (CHAR | DIGIT | '_' | ' ' | '.' | '\' | '/')* QUOT
 ID_CHAR -> (CHAR | DIGIT | '_')
 CHAR -> [a-z] | [A-Z]
 NONZERO_DIGIT -> [1-9]
