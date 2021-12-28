@@ -102,7 +102,6 @@ val : boolean
     | edges
     | labels
     | vertices
-    | boolean
     ;
 
 
@@ -132,7 +131,6 @@ SET : WS? 'set' WS? ;
 ADD : WS? 'add' WS? ;
 OF : WS? 'of' WS? ;
 TO : WS? 'to' WS? ;
-GRAPH : WS? 'graph' WS?;
 VERTICES : WS? 'vertices' WS? ;
 LABELS : WS? 'labels' WS? ;
 SELECT : WS? 'select' WS? ;
