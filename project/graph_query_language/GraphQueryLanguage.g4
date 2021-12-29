@@ -3,7 +3,7 @@ grammar GraphQueryLanguage;
 prog : (EOL? WS? stmt SEMI EOL?)+ EOF;
 
 stmt : PRINT expr
-     | VAR WS? ASSIGN WS? expr
+     | var WS? ASSIGN WS? expr
      ;
 
 expr : LP expr RP
@@ -30,7 +30,7 @@ graph : load_graph
       | LP graph RP
       ;
 
-load_graph : LOAD path;
+load_graph : LOAD (path | string);
 set_start : SET START OF (graph | var) TO (vertices | var) ;
 set_final : SET FINAL OF (graph | var) TO (vertices | var) ;
 add_start : ADD START OF (graph | var) TO (vertices | var) ;
@@ -116,13 +116,13 @@ KLEENE : WS? '*' WS?;
 DOT : WS? '.' WS? ;
 COMMA : WS? ',' WS?;
 SEMI : ';' WS?;
-LCB : '{' WS?;
+LCB : WS? '{' WS?;
 RCB : WS? '}' WS?;
-LP : '(' WS?;
-RP : WS? ')' ;
+LP : WS? '(' WS?;
+RP : WS? ')' WS?;
 QUOT : '"' ;
 TRIPLE_QUOT : '"""' ;
-COLON : ':' ;
+COLON : WS? ':' WS?;
 ARROW : '->' ;
 
 FUN : WS? 'fun' WS?;
@@ -148,10 +148,10 @@ FALSE : 'false' ;
 
 VAR : ('_' | CHAR) ID_CHAR* ;
 
-PATH : QUOT (CHAR | DIGIT | '_' | ' ' | '/' | '\\' | DOT)* QUOT ;
 INT : NONZERO_DIGIT DIGIT* | '0' ;
 CFG : TRIPLE_QUOT (CHAR | DIGIT | ' ' | '\n' | ARROW)* TRIPLE_QUOT ;
-STRING : QUOT (CHAR | DIGIT | '_' | ' ')* QUOT;
+STRING : QUOT (CHAR | DIGIT | '_' | ' ')* QUOT ;
+PATH : QUOT (CHAR | DIGIT | '_' | ' ' | '/' | '\\' | ':' | DOT)* QUOT ;
 ID_CHAR : (CHAR | DIGIT | '_');
 CHAR : [a-z] | [A-Z];
 NONZERO_DIGIT : [1-9];

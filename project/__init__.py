@@ -45,3 +45,6 @@ from project.cfpq_algorithms import *
 
 import project.cfpq
 from project.cfpq import *
+
+import project.parser
+from project.parser import *
