@@ -1,3 +1,5 @@
+import sys
+
 import project.console_app
 from project.console_app import *
 
@@ -45,3 +47,6 @@ from project.cfpq_algorithms import *
 
 import project.cfpq
 from project.cfpq import *
+
+if not sys.platform.startswith("win"):
+    from project.parser import parse
