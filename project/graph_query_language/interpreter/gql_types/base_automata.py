@@ -20,17 +20,17 @@ class BaseAutomata(BaseType, ABC):
 
     @property
     @abstractmethod
-    def symbols(self):
+    def labels(self):
         pass
 
     @property
     @abstractmethod
-    def transitions(self):
+    def edges(self):
         pass
 
     @property
     @abstractmethod
-    def states(self):
+    def vertices(self):
         pass
 
     @abstractmethod

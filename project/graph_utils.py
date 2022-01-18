@@ -2,12 +2,29 @@ from pathlib import Path
 
 import cfpq_data
 import networkx as nx
+from networkx import MultiDiGraph
 
 from project.graph_funcs import Graph, get_graph_info, create_two_cycles_graph
 
-__all__ = ["get_graph_info_util", "create_two_cycles_graph_util", "save_to_dot"]
+__all__ = [
+    "get_graph_info_util",
+    "create_two_cycles_graph_util",
+    "save_to_dot",
+    "get_graph",
+]
 
 graph_dictionary = {}
+
+
+def get_graph(graph_name) -> MultiDiGraph:
+    if all(
+        graph_name not in cfpq_data.DATASET[graph_from_ds].keys()
+        for graph_from_ds in cfpq_data.DATASET.keys()
+    ):
+        raise Exception("Graph with this name does not found in dataset.")
+
+    graph = cfpq_data.graph_from_dataset(graph_name, verbose=False)
+    return graph
 
 
 def get_graph_info_util(graph_name) -> Graph:
@@ -29,13 +46,8 @@ def get_graph_info_util(graph_name) -> Graph:
     Exception
         If graph does not found in dataset
     """
-    if all(
-        graph_name not in cfpq_data.DATASET[graph_from_ds].keys()
-        for graph_from_ds in cfpq_data.DATASET.keys()
-    ):
-        raise Exception("Graph with this name does not found in dataset.")
 
-    graph = cfpq_data.graph_from_dataset(graph_name, verbose=False)
+    graph = get_graph(graph_name)
 
     graph_info = get_graph_info(graph)
 

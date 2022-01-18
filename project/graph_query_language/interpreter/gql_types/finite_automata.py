@@ -8,6 +8,9 @@ from project.graph_query_language.interpreter.gql_exceptions import (
 from project.graph_query_language.interpreter.gql_types.base_automata import (
     BaseAutomata,
 )
+from project.graph_query_language.interpreter.gql_types.set import (
+    Set,
+)
 from project.matrix import BooleanMatrices
 from project.matrix_utils import convert_bm_to_automaton, intersect_boolean_matrices
 
@@ -50,35 +53,41 @@ class FiniteAutomata(BaseAutomata):
 
     @property
     def start(self):
-        return self.nfa.start_states
+        return Set(self.nfa.start_states)
 
     @property
     def final(self):
-        return self.nfa.final_states
+        return Set(self.nfa.final_states)
 
     @property
-    def symbols(self):
-        return self.nfa.symbols
+    def labels(self):
+        return Set(self.nfa.symbols)
 
     @property
-    def transitions(self):
-        return self.nfa.to_dict()
+    def edges(self):
+        edges_dict = self.nfa.to_dict()
+        edges_set = set()
+        for u in edges_dict.keys():
+            for label, v_s in edges_dict.get(u).items():
+                for v in v_s:
+                    edges_set.add((u, label, v))
+        return Set(edges_set)
 
     @property
-    def states(self):
-        return self.nfa.states
+    def vertices(self):
+        return Set(self.nfa.states)
 
-    def set_start(self, start_states):
-        self.nfa = replace_nfa_states(self.nfa, start_states=start_states)
+    def set_start(self, start_states: Set):
+        self.nfa = replace_nfa_states(self.nfa, start_states=start_states.data)
 
-    def set_final(self, final_states):
-        self.nfa = replace_nfa_states(self.nfa, final_states=final_states)
+    def set_final(self, final_states: Set):
+        self.nfa = replace_nfa_states(self.nfa, final_states=final_states.data)
 
-    def add_start(self, start_states):
-        self.nfa = add_states_to_nfa(self.nfa, start_states=start_states)
+    def add_start(self, start_states: Set):
+        self.nfa = add_states_to_nfa(self.nfa, start_states=start_states.data)
 
-    def add_final(self, final_states):
-        self.nfa = add_states_to_nfa(self.nfa, final_states=final_states)
+    def add_final(self, final_states: Set):
+        self.nfa = add_states_to_nfa(self.nfa, final_states=final_states.data)
 
     def get_reachable(self):
         raise NotImplementedException("")
