@@ -5,7 +5,7 @@ import pytest
 if sys.platform.startswith("win"):
     pytest.skip("Skip parser tests", allow_module_level=True)
 else:
-    from project.parser import parse
+    from project.graph_query_language.parser import parse
 
 
 @pytest.mark.parametrize(

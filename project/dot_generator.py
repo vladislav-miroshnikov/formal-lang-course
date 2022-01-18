@@ -9,7 +9,7 @@ from project.graph_query_language.GraphQueryLanguageListener import (
 from project.graph_query_language.GraphQueryLanguageParser import (
     GraphQueryLanguageParser,
 )
-from project.parser import parse, check_parser_correct
+from project.graph_query_language.parser import parse, check_parser_correct
 
 __all__ = ["generate_dot"]
 
