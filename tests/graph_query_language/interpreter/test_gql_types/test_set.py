@@ -1,3 +1,5 @@
+import sys
+
 import pytest
 
 from project.graph_query_language.interpreter.gql_exceptions import (
@@ -5,7 +7,13 @@ from project.graph_query_language.interpreter.gql_exceptions import (
     GQLTypeError,
 )
 from project.graph_query_language.interpreter.gql_types.set import Set
-from tests.graph_query_language.interpreter.interpreter import interpreter_with_value
+
+if sys.platform.startswith("win"):
+    pytest.skip("Skip set tests", allow_module_level=True)
+else:
+    from tests.graph_query_language.interpreter.interpreter import (
+        interpreter_with_value,
+    )
 
 
 @pytest.mark.parametrize(
@@ -77,3 +85,8 @@ def test_set_type_error(set_expr):
 def test_vertices_range(range_expr, expected):
     actual_set = interpreter_with_value(range_expr, "vertices_range")
     assert actual_set.data == Set(expected).data
+
+
+def test_set_type_consistency():
+    with pytest.raises(GQLTypeError):
+        Set.fromSet({1, "1"})

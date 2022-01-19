@@ -32,7 +32,7 @@ class Set(BaseType):
     @classmethod
     def fromSet(cls, pyset: set):
         if not Set._check_type_consistency(pyset):
-            raise GQLTypeError
+            raise GQLTypeError("Type consistency failed")
         return Set(pyset)
 
     @property
