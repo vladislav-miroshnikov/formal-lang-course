@@ -6,6 +6,7 @@ from project.graph_query_language.interpreter.gql_exceptions import (
     NotImplementedException,
     GQLTypeError,
 )
+from project.graph_query_language.interpreter.gql_types.bool import Bool
 from project.graph_query_language.interpreter.gql_types.set import Set
 
 if sys.platform.startswith("win"):
@@ -90,3 +91,17 @@ def test_vertices_range(range_expr, expected):
 def test_set_type_consistency():
     with pytest.raises(GQLTypeError):
         Set.fromSet({1, "1"})
+
+
+@pytest.mark.parametrize(
+    "set_expr, expected",
+    [
+        ("11 in {11..14}", True),
+        ("2 in {1, 2, 3}", True),
+        ("5 in {11..14}", False),
+        ("5 in {1, 2, 3}", False),
+        ("2 in {}", False),
+    ],
+)
+def test_set_find(set_expr, expected):
+    assert interpreter_with_value(set_expr, "expr") == Bool(expected)
