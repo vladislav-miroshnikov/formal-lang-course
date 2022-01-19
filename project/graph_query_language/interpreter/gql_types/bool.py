@@ -14,6 +14,9 @@ class Bool(BaseType):
     def __str__(self):
         return "true" if self.b else "false"
 
+    def __eq__(self, other: "Bool") -> bool:
+        return self.b == other.b
+
     def intersect(self, other: "Bool") -> "Bool":
         return Bool(self.b and other.b)
 

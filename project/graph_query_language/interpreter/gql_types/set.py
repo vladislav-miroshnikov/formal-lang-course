@@ -50,12 +50,12 @@ class Set(BaseType):
         return Bool(value in self._set)
 
     def intersect(self, other):
-        if self.set_type != other.set_type:
+        if self.data and other.data and self.set_type != other.set_type:
             raise GQLTypeError(f"Types mismatched: {self.set_type} != {other.set_type}")
         return Set(internal_set=self.data & other.data)
 
     def union(self, other):
-        if self.set_type != other.set_type:
+        if self.data and other.data and self.set_type != other.set_type:
             raise GQLTypeError(f"Types mismatched: {self.set_type} != {other.set_type}")
         return Set(internal_set=self.data | other.data)
 
