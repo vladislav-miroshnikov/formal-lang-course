@@ -1,2 +1,3 @@
 #!/bin/sh
-antlr4 -Dlanguage=Python3 -visitor ./project/graph_query_language/GraphQueryLanguage.g4
+cd project/graph_query_language
+antlr4 -Dlanguage=Python3 -visitor GraphQueryLanguage.g4 -o generated

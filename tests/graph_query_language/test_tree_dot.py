@@ -3,10 +3,7 @@ import sys
 import pytest
 import os
 
-if sys.platform.startswith("win"):
-    pytest.skip("skipping", allow_module_level=True)
-else:
-    from project.dot_generator import generate_dot
+from project.dot_generator import generate_dot
 
 from antlr4.error.Errors import ParseCancellationException
 

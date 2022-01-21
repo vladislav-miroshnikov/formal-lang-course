@@ -7,12 +7,9 @@ from project.graph_query_language.interpreter.gql_exceptions import (
 )
 from project.graph_query_language.interpreter.gql_types.bool import Bool
 
-if sys.platform.startswith("win"):
-    pytest.skip("Skip bool tests", allow_module_level=True)
-else:
-    from tests.graph_query_language.interpreter.interpreter import (
-        interpreter_with_value,
-    )
+from tests.graph_query_language.interpreter.interpreter import (
+    interpreter_with_value,
+)
 
 
 @pytest.mark.parametrize(

@@ -3,10 +3,10 @@ from antlr4.error.Errors import ParseCancellationException
 from antlr4.tree.Tree import TerminalNodeImpl
 from pydot import Dot, Edge, Node
 
-from project.graph_query_language.GraphQueryLanguageListener import (
+from project.graph_query_language.generated.GraphQueryLanguageListener import (
     GraphQueryLanguageListener,
 )
-from project.graph_query_language.GraphQueryLanguageParser import (
+from project.graph_query_language.generated.GraphQueryLanguageParser import (
     GraphQueryLanguageParser,
 )
 from project.graph_query_language.parser import parse, check_parser_correct

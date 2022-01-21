@@ -4,10 +4,10 @@ from typing import Union
 
 from antlr4 import ParserRuleContext
 
-from project.graph_query_language.GraphQueryLanguageParser import (
+from project.graph_query_language.generated.GraphQueryLanguageParser import (
     GraphQueryLanguageParser,
 )
-from project.graph_query_language.GraphQueryLanguageVisitor import (
+from project.graph_query_language.generated.GraphQueryLanguageVisitor import (
     GraphQueryLanguageVisitor,
 )
 from project.graph_query_language.interpreter.gql_exceptions import (
