@@ -2,8 +2,10 @@ import sys
 
 from antlr4 import *
 
-from project.graph_query_language.GraphQueryLanguageLexer import GraphQueryLanguageLexer
-from project.graph_query_language.GraphQueryLanguageParser import (
+from project.graph_query_language.generated.GraphQueryLanguageLexer import (
+    GraphQueryLanguageLexer,
+)
+from project.graph_query_language.generated.GraphQueryLanguageParser import (
     GraphQueryLanguageParser,
 )
 from project.graph_query_language.interpreter.gql_exceptions import InterpError

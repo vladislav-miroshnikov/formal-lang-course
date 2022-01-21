@@ -5,11 +5,13 @@ from antlr4 import InputStream, CommonTokenStream, ParseTreeWalker, ParserRuleCo
 from antlr4.tree.Tree import TerminalNodeImpl
 from pydot import Dot, Node, Edge
 
-from project.graph_query_language.GraphQueryLanguageLexer import GraphQueryLanguageLexer
-from project.graph_query_language.GraphQueryLanguageListener import (
+from project.graph_query_language.generated.GraphQueryLanguageLexer import (
+    GraphQueryLanguageLexer,
+)
+from project.graph_query_language.generated.GraphQueryLanguageListener import (
     GraphQueryLanguageListener,
 )
-from project.graph_query_language.GraphQueryLanguageParser import (
+from project.graph_query_language.generated.GraphQueryLanguageParser import (
     GraphQueryLanguageParser,
 )
 
