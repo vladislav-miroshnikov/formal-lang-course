@@ -43,14 +43,14 @@ def test_atomic_functions(input_, expect_output):
     [
         (
             """Ig1 = load graph 'tests/graph_query_language/data/graph_interpreter.dot'\n
-    print select labels of (Ig1)\n""",
+        print select labels of (Ig1)\n""",
             [">>>{b, a}", ">>>{a, b}"],
         ),
         (
             """Ig1 = load graph 'tests/graph_query_language/data/graph_interpreter.dot'\n
-    Ig2 = set start of (Ig1) to select start of ( Ig1 )\n
-    st = select final of (Ig1)\n
-    print filter (fun (df) -> df in {'0', '3;2', '4',})(st)\n""",
+        Ig2 = set start of (Ig1) to select start of ( Ig1 )\n
+        st = select final of (Ig1)\n
+        print filter (fun (df) -> df in {'0', '3;2', '4',})(st)\n""",
             [">>>{'0', '4'}", ">>>{'4', '0'}"],
         ),
         (
@@ -59,33 +59,27 @@ def test_atomic_functions(input_, expect_output):
         ),
         (
             """Ig1 = load graph 'tests/graph_query_language/data/graph_interpreter.dot'\n
-    print Ig1 && 'a b b'\n""",
+        print Ig1 && 'a b b'\n""",
             [">>>($.((a.b).b))", ">>>($.(a.(b.b)))"],
         ),
         (
             """Ig1 = load graph 'tests/graph_query_language/data/graph_interpreter.dot'\n
-    Ig2 = set start of (Ig1) to select start of ( Ig1 )\n
-    st = select final of (Ig1)\n
-    query = ('b')** || 'a' || 'a b'\n
-    inter = Ig1 && query\n
-    print inter && 'a b'\n""",
+        Ig2 = set start of (Ig1) to select start of ( Ig1 )\n
+        st = select final of (Ig1)\n
+        query = ('b')** || 'a' || 'a b'\n
+        inter = Ig1 && query\n
+        print inter && 'a b'\n""",
             [">>>($.(a.b))"],
         ),
         (
             """Ig1 = load graph 'tests/graph_query_language/data/graph_interpreter.dot'\n
-    Ig2 = set start of (Ig1) to select start of ( Ig1 )\n
-    print Ig2 && 'a b'\n""",
+        Ig2 = set start of (Ig1) to select start of ( Ig1 )\n
+        print Ig2 && 'a b'\n""",
             [">>>($.(a.b))"],
         ),
         (
             """Ig1 = load graph 'tests/graph_query_language/data/graph_interpreter.dot'\n
-    ff = select reachable of (Ig1)\n
-    print filter (fun (df) -> df[1] in {0,})(filter (fun (df) -> df[0] in {1, 2,})(ff))\n""",
-            [">>>{(1, 0), (2, 0)}", ">>>{(2, 0), (1, 0)}", ">>>set()"],
-        ),
-        (
-            """Ig1 = load graph 'tests/graph_query_language/data/graph_interpreter.dot'\n
-    print filter (fun (df) -> df in {'0',})(select final of (Ig1))\n""",
+        print filter (fun (df) -> df in {'0',})(select final of (Ig1))\n""",
             [">>>{'0'}"],
         ),
     ],
@@ -137,7 +131,7 @@ def test_multiple_functions(input_, expect_output):
         ),
         (
             """st = select final of (Ig1)\n
-    Ig1 = load graph 'tests/data/graphinterp.dot'\n""",
+        Ig1 = load graph 'tests/data/graphinterp.dot'\n""",
             [
                 "----Exception----",
                 "No value with name: Ig1",
