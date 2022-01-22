@@ -1,9 +1,11 @@
 from networkx import MultiDiGraph
 from pyformlang.finite_automaton import NondeterministicFiniteAutomaton
+from pyformlang.regular_expression import MisformedRegexError
 
+from project import regex_to_min_dfa
 from project.graph_funcs import get_nfa_by_graph, add_states_to_nfa, replace_nfa_states
 from project.graph_query_language.interpreter.gql_exceptions import (
-    NotImplementedException,
+    InvalidCastException,
 )
 from project.graph_query_language.interpreter.gql_types.base_automata import (
     BaseAutomata,
@@ -13,24 +15,47 @@ from project.graph_query_language.interpreter.gql_types.set import (
 )
 from project.matrix import BooleanMatrices
 from project.matrix_utils import convert_bm_to_automaton, intersect_boolean_matrices
+from project.rpq import get_reachable
 
 
 class FiniteAutomata(BaseAutomata):
-    def __init__(self, nfa: NondeterministicFiniteAutomaton):
+    def __init__(self, nfa: NondeterministicFiniteAutomaton, reachable_set: set = None):
         self.nfa = nfa
+        self.reachable_set = reachable_set or self.__get_reachable(nfa=nfa)
 
     def __str__(self):
-        return str(self.nfa.to_dict())
+        return str(self.nfa.minimize().to_regex())
+
+    @staticmethod
+    def __get_reachable(nfa: NondeterministicFiniteAutomaton) -> set:
+        bmatrix = BooleanMatrices(nfa)
+        return get_reachable(bmatrix)
 
     @classmethod
     def fromGraph(cls, graph: MultiDiGraph):
         return cls(nfa=get_nfa_by_graph(graph))
 
-    def intersect(self, other: "FiniteAutomata"):
+    @classmethod
+    def fromString(cls, regex_str: str):
+        try:
+            return FiniteAutomata(nfa=regex_to_min_dfa(regex_str))
+        except MisformedRegexError as exc:
+            raise InvalidCastException from exc
+
+    def __intersectFiniteAutomata(self, other: "FiniteAutomata") -> "FiniteAutomata":
         lhs = BooleanMatrices(self.nfa)
         rhs = BooleanMatrices(other.nfa)
         intersection_result = intersect_boolean_matrices(lhs, rhs)
-        return FiniteAutomata(convert_bm_to_automaton(intersection_result))
+        return FiniteAutomata(
+            nfa=convert_bm_to_automaton(intersection_result),
+            reachable_set=get_reachable(bmatrix=intersection_result),
+        )
+
+    def intersect(self, other: "FiniteAutomata"):
+        if isinstance(other, FiniteAutomata):
+            return self.__intersectFiniteAutomata(other=other)
+
+        raise InvalidCastException("FiniteAutomata", str(type(other)))
 
     def union(self, other: "FiniteAutomata"):
         return FiniteAutomata(self.nfa.union(other.nfa).to_deterministic())
@@ -41,12 +66,7 @@ class FiniteAutomata(BaseAutomata):
         return FiniteAutomata(lhs.concatenate(rhs).to_epsilon_nfa().to_deterministic())
 
     def inverse(self):
-        inverse_nfa = self.nfa.copy()
-        for state in inverse_nfa.states:
-            inverse_nfa.add_final_state(state)
-        for state in self.nfa.final_states:
-            inverse_nfa.remove_final_state(state)
-        return FiniteAutomata(nfa=inverse_nfa)
+        return FiniteAutomata(self.nfa.get_complement().to_deterministic())
 
     def kleene(self):
         return FiniteAutomata(nfa=self.nfa.kleene_star().to_deterministic())
@@ -90,4 +110,4 @@ class FiniteAutomata(BaseAutomata):
         self.nfa = add_states_to_nfa(self.nfa, final_states=final_states.data)
 
     def get_reachable(self):
-        raise NotImplementedException("")
+        return Set(self.reachable_set)

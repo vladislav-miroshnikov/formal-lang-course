@@ -13,20 +13,23 @@ expr : LP expr RP
      | var
      | val
      | NOT expr
+     | expr KLEENE
      | expr IN expr
      | expr AND expr
      | expr DOT expr
      | expr OR expr
-     | expr KLEENE
      ;
 
 graph : load_graph
+      | cfg
       | set_start
       | set_final
       | add_start
       | add_final
       | LP graph RP
       ;
+
+cfg : CFG ;
 
 load_graph : LOAD (path | string);
 set_start : SET START OF (graph | var) TO (vertices | var) ;
@@ -117,9 +120,12 @@ LCB : WS? '{' WS?;
 RCB : WS? '}' WS?;
 LP : WS? '(' WS?;
 RP : WS? ')' WS?;
+
 QUOT : '"' ;
+TRIPLE_QUOT : '"""' ;
 COLON : WS? ':' WS?;
 ARROW : '->' ;
+CFG : TRIPLE_QUOT (CHAR | DIGIT | ' ' | '\n' | ARROW)* TRIPLE_QUOT ;
 
 FUN : WS? 'fun' WS?;
 LOAD : WS? 'load' WS? ;

@@ -19,7 +19,10 @@ from project.graph_query_language.interpreter.gql_types.base_automata import (
 )
 from project.graph_query_language.interpreter.gql_types.base_type import BaseType
 from project.graph_query_language.interpreter.gql_types.bool import Bool
-from project.graph_query_language.interpreter.gql_types.regex import Regex
+from project.graph_query_language.interpreter.gql_types.rsm import RSM
+from project.graph_query_language.interpreter.gql_types.finite_automata import (
+    FiniteAutomata,
+)
 from project.graph_query_language.interpreter.gql_types.set import Set
 from project.graph_query_language.interpreter.memory import Memory
 from project.graph_query_language.interpreter.utils import get_graph_by_name
@@ -113,7 +116,7 @@ class Visitor(GraphQueryLanguageVisitor):
         return vertex_from, label, vertex_to
 
     def visitLabel(self, ctx: GraphQueryLanguageParser.LabelContext):
-        return Regex(self.visit(ctx.string()))
+        return FiniteAutomata.fromString(self.visit(ctx.string()))
 
     def visitAnfunc(self, ctx: GraphQueryLanguageParser.AnfuncContext) -> Fun:
         params = self.visitVariables(ctx.variables())
@@ -245,3 +248,7 @@ class Visitor(GraphQueryLanguageVisitor):
 
     def visitVar_edge(self, ctx: GraphQueryLanguageParser.Var_edgeContext):
         pass
+
+    def visitCfg(self, ctx: GraphQueryLanguageParser.CfgContext) -> RSM:
+        cfg_text = ctx.CFG().getText().strip('"""')
+        return RSM.fromText(cfg_text)
