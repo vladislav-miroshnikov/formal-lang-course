@@ -10,6 +10,7 @@ from project.graph_query_language.interpreter.gql_exceptions import (
 from project.graph_query_language.interpreter.gql_types.base_automata import (
     BaseAutomata,
 )
+from project.graph_query_language.interpreter.gql_types.gql_cfg import GqlCFG
 from project.graph_query_language.interpreter.gql_types.set import (
     Set,
 )
@@ -51,9 +52,16 @@ class FiniteAutomata(BaseAutomata):
             reachable_set=get_reachable(bmatrix=intersection_result),
         )
 
-    def intersect(self, other: "FiniteAutomata"):
+    def __intersectCFG(self, other: GqlCFG) -> GqlCFG:
+        intersection = other.intersect(self)
+        return intersection
+
+    def intersect(self, other):
         if isinstance(other, FiniteAutomata):
             return self.__intersectFiniteAutomata(other=other)
+
+        if isinstance(other, GqlCFG):
+            return self.__intersectCFG(other=other)
 
         raise InvalidCastException("FiniteAutomata", str(type(other)))
 
