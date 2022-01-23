@@ -4,17 +4,14 @@ from project.graph_query_language.interpreter.gql_exceptions import RunTimeExcep
 from project.graph_query_language.interpreter.interpreter import interpreter
 
 
-def main():
-    input_text = "".join(sys.stdin.readlines())
+def main(*argv):
     try:
-        interpreter(input_text)
-        sys.stdout.write("\nInterpreter ended with exit code 0")
-        return 0
+        interpreter(*argv)
     except RunTimeException as e:
-        sys.stdout.write(e.msg)
-        sys.stdout.write("\nInterpreter ended with exit code 1\n")
-        return 1
+        sys.stdout.write(f"Error: {e.msg}\n")
+        exit(1)
+    exit(0)
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])

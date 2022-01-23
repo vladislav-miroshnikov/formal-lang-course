@@ -49,3 +49,21 @@ class GQLTypeError(RunTimeException):
     """
 
     pass
+
+
+class InvalidScriptPath(RunTimeException):
+    """
+    Raises when failed to open given script
+    """
+
+    def __init__(self, filename: str):
+        self.msg = f"Could not open file {filename}"
+
+
+class InvalidScriptExtension(RunTimeException):
+    """
+    Raises when given script doesn't have .gql extension
+    """
+
+    def __init__(self):
+        self.msg = f"Script name must match *.gql extension"

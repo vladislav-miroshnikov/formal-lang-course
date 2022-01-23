@@ -1,12 +1,9 @@
-import sys
-
 import pytest
 
 from project.graph_query_language.interpreter.gql_exceptions import (
     NotImplementedException,
 )
 from project.graph_query_language.interpreter.gql_types.bool import Bool
-
 from tests.graph_query_language.interpreter.interpreter import (
     interpreter_with_value,
 )
