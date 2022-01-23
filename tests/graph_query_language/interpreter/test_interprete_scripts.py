@@ -33,6 +33,9 @@ def test_invalid_extension():
         "tests/graph_query_language/interpreter/scripts/labels_filter.gql",
         "tests/graph_query_language/interpreter/scripts/regex.gql",
         "tests/graph_query_language/interpreter/scripts/rpq.gql",
+        "tests/graph_query_language/interpreter/scripts/graph_start_states.gql",
+        "tests/graph_query_language/interpreter/scripts/graph_final_states.gql",
+        "tests/graph_query_language/interpreter/scripts/cfpq.gql",
     ],
 )
 def test_correct_script(script_path):

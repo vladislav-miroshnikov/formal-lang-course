@@ -1,0 +1,4 @@
+graph = load "pizza";
+h1 = set final of graph to {1..10};
+h2 = add final of h1 to {8..15};
+print select final vertices from h2;

@@ -267,3 +267,12 @@ class Visitor(GraphQueryLanguageVisitor):
     def visitCfg(self, ctx: GraphQueryLanguageParser.CfgContext) -> GqlCFG:
         cfg_text = ctx.CFG().getText().strip('"""')
         return GqlCFG.fromText(cfg_text)
+
+    def visitVertices(self, ctx: GraphQueryLanguageParser.VerticesContext):
+        return self.visitChildren(ctx)
+
+    def visitLabels(self, ctx: GraphQueryLanguageParser.LabelsContext):
+        return self.visitChildren(ctx)
+
+    def visitVal(self, ctx: GraphQueryLanguageParser.ValContext):
+        return self.visitChildren(ctx)
