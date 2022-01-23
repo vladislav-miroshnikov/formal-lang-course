@@ -55,15 +55,14 @@ expr -> LP expr RP
       | var
       | val
       | NOT expr
+      | expr KLEENE
       | expr IN expr
       | expr AND expr
       | expr DOT expr
       | expr OR expr
-      | expr KLEENE
 
 graph -> load_graph
        | cfg
-       | string
        | set_start
        | set_final
        | add_start
@@ -130,7 +129,10 @@ val -> boolean
      | labels
      | vertices
 
-boolean -> BOOL
+boolean -> boolean
+boolean -> TRUE | FALSE
+TRUE -> 'true'
+FALSE -> 'false'
 
 ASSIGN -> '='
 AND -> '&'
