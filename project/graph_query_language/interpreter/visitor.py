@@ -19,10 +19,10 @@ from project.graph_query_language.interpreter.gql_types.base_automata import (
 )
 from project.graph_query_language.interpreter.gql_types.base_type import BaseType
 from project.graph_query_language.interpreter.gql_types.bool import Bool
-from project.graph_query_language.interpreter.gql_types.gql_cfg import GqlCFG
 from project.graph_query_language.interpreter.gql_types.finite_automata import (
     FiniteAutomata,
 )
+from project.graph_query_language.interpreter.gql_types.gql_cfg import GqlCFG
 from project.graph_query_language.interpreter.gql_types.set import Set
 from project.graph_query_language.interpreter.memory import Memory
 from project.graph_query_language.interpreter.utils import get_graph_by_name
@@ -87,9 +87,7 @@ class Visitor(GraphQueryLanguageVisitor):
     ):
         graph = self.visit(ctx.var(0)) if ctx.var(0) else self.visit(ctx.graph())
         nodes = self.visit(ctx.var(1)) if ctx.var(1) else self.visit(ctx.vertices())
-        getattr(graph, method)(nodes)
-
-        return graph
+        return getattr(graph, method)(nodes)
 
     def visitSet_start(self, ctx: GraphQueryLanguageParser.Set_startContext):
         return self._change_states(ctx, method="set_start")

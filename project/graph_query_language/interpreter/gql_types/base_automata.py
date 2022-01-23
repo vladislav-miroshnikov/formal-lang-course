@@ -5,7 +5,7 @@ from project.graph_query_language.interpreter.gql_types.base_type import BaseTyp
 
 class BaseAutomata(BaseType, ABC):
     """
-    Base class for Automata (RSM, FA)
+    Base class for Automata (CFG, FA)
     """
 
     @property
