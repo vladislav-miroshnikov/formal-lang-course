@@ -1,0 +1,6 @@
+g1 = load "skos";
+g2 = load "travel";
+g1_labels = select labels from g1;
+g2_labels = select labels from g2;
+filter_labels = filter (fun label: label in g2_labels) g1_labels;
+print filter_labels;

@@ -1,0 +1,5 @@
+graph = load "travel";
+query = "l1"* | "l2";
+intersection = graph & query;
+reachable_vert = select reachable vertices from intersection;
+print reachable_vert;
