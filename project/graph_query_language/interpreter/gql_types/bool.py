@@ -11,6 +11,9 @@ class Bool(BaseType):
     def __bool__(self):
         return self.b
 
+    def __hash__(self):
+        return hash(self.b)
+
     def __str__(self):
         return "true" if self.b else "false"
 
