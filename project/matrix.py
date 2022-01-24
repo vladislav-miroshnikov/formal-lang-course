@@ -1,9 +1,12 @@
-from pyformlang.finite_automaton import NondeterministicFiniteAutomaton
+from pyformlang.cfg import Variable
+from pyformlang.finite_automaton import NondeterministicFiniteAutomaton, State
 from scipy import sparse
 
 __all__ = ["BooleanMatrices"]
 
 from scipy.sparse import dok_matrix
+
+from project.rsm import RSM, Box
 
 
 class BooleanMatrices:
@@ -32,6 +35,7 @@ class BooleanMatrices:
             self.start_states = set()
             self.final_states = set()
             self.bool_matrices = dict()
+            self.states_to_box_variable = {}
         else:
             self.states_count = len(n_automaton.states)
             self.state_indices = {
@@ -40,6 +44,7 @@ class BooleanMatrices:
             self.start_states = n_automaton.start_states
             self.final_states = n_automaton.final_states
             self.bool_matrices = self.init_bool_matrices(n_automaton)
+            self.states_to_box_variable = {}
 
     def get_states(self):
         return self.state_indices.keys()
@@ -102,3 +107,81 @@ class BooleanMatrices:
             prev_nnz, curr_nnz = curr_nnz, tc.nnz
 
         return tc
+
+    @classmethod
+    def from_rsm(cls, rsm: RSM):
+        """
+        Create an instance of BooleanMatrices from rsm
+
+        Attributes
+        ----------
+        rsm: RSM
+            Recursive State Machine
+        """
+        bm = cls()
+        bm.states_count = sum(len(box.dfa.states) for box in rsm.boxes)
+        box_idx = 0
+        for box in rsm.boxes:
+            for idx, state in enumerate(box.dfa.states):
+                new_name = bm._rename_rsm_box_state(state, box.variable)
+                bm.state_indices[new_name] = idx + box_idx
+                if state in box.dfa.start_states:
+                    bm.start_states.add(bm.state_indices[new_name])
+                if state in box.dfa.final_states:
+                    bm.final_states.add(bm.state_indices[new_name])
+
+            bm.states_to_box_variable.update(
+                {
+                    (
+                        bm.state_indices[
+                            bm._rename_rsm_box_state(box.dfa.start_state, box.variable)
+                        ],
+                        bm.state_indices[bm._rename_rsm_box_state(state, box.variable)],
+                    ): box.variable.value
+                    for state in box.dfa.final_states
+                }
+            )
+            bm.bool_matrices.update(bm._create_box_bool_matrices(box))
+            box_idx += len(box.dfa.states)
+
+        return bm
+
+    @staticmethod
+    def _rename_rsm_box_state(state: State, box_variable: Variable):
+        return State(f"{state.value}#{box_variable.value}")
+
+    def _create_box_bool_matrices(self, box: Box) -> dict:
+        """
+        Create bool matrices for RSM box
+        Attributes
+        ----------
+        box: Box
+            Box of RSM
+        Returns
+        -------
+        bmatrix: dict
+            Boolean Matrices dict
+        """
+        bmatrix = {}
+        for s_from, trans in box.dfa.to_dict().items():
+            for label, states_to in trans.items():
+                if not isinstance(states_to, set):
+                    states_to = {states_to}
+                for s_to in states_to:
+                    idx_from = self.state_indices[
+                        self._rename_rsm_box_state(s_from, box.variable)
+                    ]
+                    idx_to = self.state_indices[
+                        self._rename_rsm_box_state(s_to, box.variable)
+                    ]
+
+                    if label in self.bool_matrices:
+                        self.bool_matrices[label][idx_from, idx_to] = True
+                        continue
+                    if label not in bmatrix:
+                        bmatrix[label] = sparse.dok_matrix(
+                            (self.states_count, self.states_count), dtype=bool
+                        )
+                    bmatrix[label][idx_from, idx_to] = True
+
+        return bmatrix

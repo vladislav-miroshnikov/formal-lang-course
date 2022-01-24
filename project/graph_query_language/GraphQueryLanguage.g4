@@ -13,22 +13,23 @@ expr : LP expr RP
      | var
      | val
      | NOT expr
+     | expr KLEENE
      | expr IN expr
      | expr AND expr
      | expr DOT expr
      | expr OR expr
-     | expr KLEENE
      ;
 
 graph : load_graph
       | cfg
-      | string
       | set_start
       | set_final
       | add_start
       | add_final
       | LP graph RP
       ;
+
+cfg : CFG ;
 
 load_graph : LOAD (path | string);
 set_start : SET START OF (graph | var) TO (vertices | var) ;
@@ -76,7 +77,6 @@ select_start : SELECT START VERTICES FROM (graph | var) ;
 select_vertices : SELECT VERTICES FROM (graph | var) ;
 vertices_range : LCB INT DOT DOT INT RCB ;
 
-cfg : CFG ;
 string : STRING ;
 path : PATH ;
 
@@ -105,7 +105,7 @@ val : boolean
     ;
 
 
-boolean : BOOL;
+boolean : TRUE | FALSE;
 
 ASSIGN : WS? '=' WS? ;
 AND : WS? '&' WS?;
@@ -120,10 +120,12 @@ LCB : WS? '{' WS?;
 RCB : WS? '}' WS?;
 LP : WS? '(' WS?;
 RP : WS? ')' WS?;
+
 QUOT : '"' ;
 TRIPLE_QUOT : '"""' ;
 COLON : WS? ':' WS?;
 ARROW : '->' ;
+CFG : TRIPLE_QUOT (CHAR | DIGIT | ' ' | '\n' | ARROW)* TRIPLE_QUOT ;
 
 FUN : WS? 'fun' WS?;
 LOAD : WS? 'load' WS? ;
@@ -142,14 +144,12 @@ FROM : WS? 'from' WS? ;
 FILTER : WS? 'filter' WS? ;
 MAP : WS? 'map' WS? ;
 PRINT : WS? 'print' WS?;
-BOOL : TRUE | FALSE;
 TRUE : 'true' ;
 FALSE : 'false' ;
 
 VAR : ('_' | CHAR) ID_CHAR* ;
 
 INT : NONZERO_DIGIT DIGIT* | '0' ;
-CFG : TRIPLE_QUOT (CHAR | DIGIT | ' ' | '\n' | ARROW)* TRIPLE_QUOT ;
 STRING : QUOT (CHAR | DIGIT | '_' | ' ')* QUOT ;
 PATH : QUOT (CHAR | DIGIT | '_' | ' ' | '/' | '\\' | ':' | DOT)* QUOT ;
 ID_CHAR : (CHAR | DIGIT | '_');

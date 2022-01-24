@@ -1,7 +1,9 @@
 from antlr4 import InputStream, CommonTokenStream
 
-from project.graph_query_language.GraphQueryLanguageLexer import GraphQueryLanguageLexer
-from project.graph_query_language.GraphQueryLanguageParser import (
+from project.graph_query_language.generated.GraphQueryLanguageLexer import (
+    GraphQueryLanguageLexer,
+)
+from project.graph_query_language.generated.GraphQueryLanguageParser import (
     GraphQueryLanguageParser,
 )
 

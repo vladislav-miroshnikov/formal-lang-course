@@ -1,0 +1,4 @@
+graph = load "pizza";
+h1 = set start of graph to {1..10};
+h2 = add start of h1 to {8..15};
+print select start vertices from h2;

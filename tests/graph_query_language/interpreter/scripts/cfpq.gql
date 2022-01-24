@@ -1,0 +1,6 @@
+cfg = """S -> a S b
+S -> epsilon
+""";
+graph = load "skos";
+cfpq = cfg & graph;
+print cfpq;
